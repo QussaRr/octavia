@@ -1,0 +1,2 @@
+--- CM reset @ 2026-07-18 04:17:22 ---
+log file: C:\Users\Roma\AppData\Roaming\Blender Foundation\Blender\5.1\scripts\addons\octavia\interface\cm_debug.txt

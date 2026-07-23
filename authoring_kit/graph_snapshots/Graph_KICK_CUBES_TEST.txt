@@ -1,0 +1,724 @@
+================== ARCHITECTURE ANALYSIS: [Graph_KICK_CUBES_TEST] (Graph_KICK_CUBES_TEST) ==================
+MODE: LOGICAL
+nodes_meat=77 | reroutes=3 | links=107 | reroutes_collapsed_in_wires=yes
+
+## SIGNAL INDEX
+(compact; full truth in MODULE FRAME below)
+### BUFFER WIRING (Object Info)
+  [Object Info] label="BUFFER" → object=None | transform_space=ORIGINAL | as_instance=False
+  [Object Info.001] label="OBJ_SELF" → object=None | transform_space=ORIGINAL | as_instance=False
+### NAMED ATTR READS/WRITES
+  start_frame @ [Named Attribute]
+  end_frame @ [Named Attribute.001]
+  octavia_voice_id @ [Named Attribute.002]
+  oc_m_StarterFade @ [Named Attribute.003]
+  burst_normal @ [Named Attribute.004]
+  burst_position @ [Named Attribute.005]
+  oc_m_StarterCollapse @ [Named Attribute.006]
+  oc_m_StarterCount @ [Named Attribute.007]
+  oc_m_StarterSize @ [Named Attribute.008]
+  oc_m_StarterLength @ [Named Attribute.009]
+### MACROS (octavia_macro)
+  oc_m_StarterFade | "FADE" | cat=ECHO | default=75.91304016113281
+  oc_m_StarterCollapse | "Collapse" | cat=ECHO | default=20.2391300201416
+  oc_m_StarterCount | "Count" | cat=ECHO | default=13.399999618530273
+  oc_m_StarterSize | "Size" | cat=GLOBAL | default=0.4275217354297638
+  oc_m_StarterLength | "Length" | cat=GLOBAL | default=1.2978260517120361
+### ZONE HINTS (index, not proof)
+  [Compare] label="IS_BURST_ZONE" type=FunctionNodeCompare
+  [Compare.001] label="HAS_NOTE " type=FunctionNodeCompare
+  [Compare.002] label="NOTE_HIT " type=FunctionNodeCompare
+  [Delete Geometry] label="KEEP_NOTES" type=GeometryNodeDeleteGeometry
+  [Named Attribute.004] label="ATTR_BURST_NML" type=GeometryNodeInputNamedAttribute
+  [Named Attribute.005] label="ATTR_BURST_POS" type=GeometryNodeInputNamedAttribute
+### GROUP I/O
+  Group Input sockets: Geometry
+  Group Output sockets: Geometry
+
+MODULE FRAME: ======= BUFFER & TIME =======
+
+  Node: [Object Info] | LABEL: "BUFFER" (Type: GeometryNodeObjectInfo)
+    PARAMETERS: TRANSFORM_SPACE: ORIGINAL
+    Inputs:
+        0. "Object" -> FREE [Value: None]
+    Outputs:
+        4. "Geometry" -> LINKED (6 consumers)
+
+  Node: [Scene Time] | LABEL: "TIME" (Type: GeometryNodeInputSceneTime)
+    Outputs:
+        1. "Frame" -> LINKED (4 consumers)
+
+  Node: [Named Attribute] | LABEL: "ATTR_START" (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: start_frame]
+    Outputs:
+        0. "Attribute" -> LINKED (5 consumers)
+
+  Node: [Named Attribute.001] | LABEL: "ATTR_END" (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: end_frame]
+    Outputs:
+        0. "Attribute" -> LINKED (5 consumers)
+
+  Node: [Named Attribute.002] | LABEL: "ATTR_VOICE " (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: octavia_voice_id]
+    Outputs:
+        0. "Attribute" -> LINKED (1 consumer)
+
+  Node: [Index] | LABEL: "POINT_INDEX" (Type: GeometryNodeInputIndex)
+    Outputs:
+        0. "Index" -> LINKED (2 consumers)
+  undocumented_dna: 6
+
+MODULE FRAME: ======= SLOT FILTER =======
+
+  Node: [Compare] | LABEL: "IS_BURST_ZONE" (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #1) From: [Index] (Label: "POINT_INDEX") [Socket: "Index"]
+        1. "B" -> FREE [Value: 159.0]
+    Outputs:
+        0. "Result" -> LINKED (1 consumer)
+
+  Node: [Compare.001] | LABEL: "HAS_NOTE " (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #2) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+        1. "B" -> FREE [Value: 0.5]
+    Outputs:
+        0. "Result" -> LINKED (1 consumer)
+
+  Node: [Compare.002] | LABEL: "NOTE_HIT " (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #3) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #4) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+    Outputs:
+        0. "Result" -> LINKED (1 consumer)
+
+  Node: [Compare.003] | LABEL: "IS_HELD " (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #5) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+    Outputs:
+        0. "Result" -> LINKED (1 consumer)
+
+  Node: [Compare.004] | LABEL: "STILL_PLAYING " (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #6) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #7) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+    Outputs:
+        0. "Result" -> LINKED (1 consumer)
+
+  Node: [Boolean Math] | LABEL: "BODY_ACTIVE " (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: OR
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #9) From: [Compare.004] (Label: "STILL_PLAYING ") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #8) From: [Compare.003] (Label: "IS_HELD ") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED (1 consumer)
+
+  Node: [Boolean Math.001] | LABEL: "IN_BODY " (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #31) From: [Compare.002] (Label: "NOTE_HIT ") [Socket: "Result"] (via 1 reroute)
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #10) From: [Boolean Math] (Label: "BODY_ACTIVE ") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED (2 consumers)
+
+  Node: [Boolean Math.002] | LABEL: "AND_1 " (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #11) From: [Compare] (Label: "IS_BURST_ZONE") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #12) From: [Compare.001] (Label: "HAS_NOTE ") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED (1 consumer)
+
+  Node: [Boolean Math.003] | LABEL: "AND_2" (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #13) From: [Boolean Math.002] (Label: "AND_1 ") [Socket: "Boolean"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #24) From: [Boolean Math.005] (Label: "ALIVE_TOTAL") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED (1 consumer)
+
+  Node: [Boolean Math.006] | LABEL: "NOT_ALIVE" (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: NOT
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #34) From: [Boolean Math.003] (Label: "AND_2") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED (1 consumer)
+  undocumented_dna: 10
+
+MODULE FRAME: ======= MACROS  =======
+
+  Node: [Math] | LABEL: "VOICE_ADDR" (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #14) From: [Named Attribute.002] (Label: "ATTR_VOICE ") [Socket: "Attribute"]
+        1. "Value" -> FREE [Value: 128.0]
+    Outputs:
+        0. "Value" -> LINKED (5 consumers)
+
+  Node: [StarterFade] | LABEL: "NONE" (Type: ShaderNodeValue)
+
+  Node: [Named Attribute.003] | LABEL: "MACRO_FADE " (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: oc_m_StarterFade]
+    Outputs:
+        0. "Attribute" -> LINKED (1 consumer)
+
+  Node: [Sample Index] | LABEL: "READ_FADE" (Type: GeometryNodeSampleIndex)
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #17) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #19) From: [Named Attribute.003] (Label: "MACRO_FADE ") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #18) From: [Math] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [StarterCollapse] | LABEL: "NONE" (Type: ShaderNodeValue)
+
+  Node: [StarterCount] | LABEL: "NONE" (Type: ShaderNodeValue)
+
+  Node: [StarterSize] | LABEL: "NONE" (Type: ShaderNodeValue)
+
+  Node: [StarterLength] | LABEL: "NONE" (Type: ShaderNodeValue)
+
+  Node: [Named Attribute.006] | LABEL: "MACRO_COLLAPSE " (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: oc_m_StarterCollapse]
+    Outputs:
+        0. "Attribute" -> LINKED (1 consumer)
+
+  Node: [Named Attribute.007] | LABEL: "MACRO_COUNT" (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: oc_m_StarterCount]
+    Outputs:
+        0. "Attribute" -> LINKED (1 consumer)
+
+  Node: [Named Attribute.008] | LABEL: "MACRO_SIZE" (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: oc_m_StarterSize]
+    Outputs:
+        0. "Attribute" -> LINKED (1 consumer)
+
+  Node: [Named Attribute.009] | LABEL: "MACRO_LENGTH" (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: oc_m_StarterLength]
+    Outputs:
+        0. "Attribute" -> LINKED (1 consumer)
+
+  Node: [Sample Index.001] | LABEL: "READ_COLLAPSE " (Type: GeometryNodeSampleIndex)
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #74) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #66) From: [Named Attribute.006] (Label: "MACRO_COLLAPSE ") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #70) From: [Math] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (3 consumers)
+
+  Node: [Sample Index.002] | LABEL: "READ_COUNT " (Type: GeometryNodeSampleIndex)
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #75) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #67) From: [Named Attribute.007] (Label: "MACRO_COUNT") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #71) From: [Math] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Sample Index.003] | LABEL: "READ_SIZE " (Type: GeometryNodeSampleIndex)
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #76) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #68) From: [Named Attribute.008] (Label: "MACRO_SIZE") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #72) From: [Math] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (2 consumers)
+
+  Node: [Sample Index.004] | LABEL: "READ_LENGTH" (Type: GeometryNodeSampleIndex)
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #77) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #69) From: [Named Attribute.009] (Label: "MACRO_LENGTH") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #73) From: [Math] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+  undocumented_dna: 16
+
+MODULE FRAME: ======= ECHO & LIFE =======
+
+  Node: [Math.001] | LABEL: "ECHO_ELAPSED " (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #15) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #16) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Compare.006] | LABEL: "WAS_RELEASED" (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #30) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"] (via 2 reroutes)
+        1. "B" -> FREE [Value: 0.5]
+    Outputs:
+        0. "Result" -> LINKED (4 consumers)
+
+  Node: [Compare.007] | LABEL: "IN_ECHO" (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #62) From: [Switch.001] (Label: "ECHO_SAFE") [Socket: "Output"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #20) From: [Sample Index] (Label: "READ_FADE") [Socket: "Value"]
+    Outputs:
+        0. "Result" -> LINKED (1 consumer)
+
+  Node: [Boolean Math.004] | LABEL: "ECHO_ALIVE" (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #21) From: [Compare.006] (Label: "WAS_RELEASED") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #65) From: [Boolean Math.007] (Label: "IN_ECHO_FIX") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED (1 consumer)
+
+  Node: [Boolean Math.005] | LABEL: "ALIVE_TOTAL" (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: OR
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #22) From: [Boolean Math.001] (Label: "IN_BODY ") [Socket: "Boolean"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #23) From: [Boolean Math.004] (Label: "ECHO_ALIVE") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED (1 consumer)
+
+  Node: [Math.002] | LABEL: "ELAPSED_BODY" (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #25) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #26) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Math.003] | LABEL: "HOLD_SPAN" (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #36) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #37) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Switch] | LABEL: "TIP_ELAPSED" (Type: GeometryNodeSwitch)
+    PARAMETERS: INPUT_TYPE: FLOAT
+    Inputs:
+        0. "Switch" -> LINKED (Slot 0)
+           <--- (Wire #38) From: [Compare.006] (Label: "WAS_RELEASED") [Socket: "Result"]
+        1. "False" -> LINKED (Slot 1)
+           <--- (Wire #39) From: [Math.002] (Label: "ELAPSED_BODY") [Socket: "Value"]
+        2. "True" -> LINKED (Slot 2)
+           <--- (Wire #40) From: [Math.003] (Label: "HOLD_SPAN") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED (1 consumer)
+
+  Node: [Switch.001] | LABEL: "ECHO_SAFE" (Type: GeometryNodeSwitch)
+    PARAMETERS: INPUT_TYPE: FLOAT
+    Inputs:
+        0. "Switch" -> LINKED (Slot 0)
+           <--- (Wire #59) From: [Compare.006] (Label: "WAS_RELEASED") [Socket: "Result"]
+        2. "True" -> LINKED (Slot 2)
+           <--- (Wire #60) From: [Math.001] (Label: "ECHO_ELAPSED ") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED (5 consumers)
+
+  Node: [Compare.005] | LABEL: "ECHO_STARTED" (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #61) From: [Switch.001] (Label: "ECHO_SAFE") [Socket: "Output"]
+    Outputs:
+        0. "Result" -> LINKED (1 consumer)
+
+  Node: [Boolean Math.007] | LABEL: "IN_ECHO_FIX" (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #63) From: [Compare.005] (Label: "ECHO_STARTED") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #64) From: [Compare.007] (Label: "IN_ECHO") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED (1 consumer)
+
+  Node: [Math.005] | LABEL: "T_NORM" (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: True
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #78) From: [Switch.001] (Label: "ECHO_SAFE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #79) From: [Sample Index.001] (Label: "READ_COLLAPSE ") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Math.006] | LABEL: "T_LEFT" (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> FREE [Value: 1.0]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #80) From: [Math.005] (Label: "T_NORM") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Switch.002] | LABEL: "FADE_GATE" (Type: GeometryNodeSwitch)
+    PARAMETERS: INPUT_TYPE: FLOAT
+    Inputs:
+        0. "Switch" -> LINKED (Slot 0)
+           <--- (Wire #81) From: [Boolean Math.001] (Label: "IN_BODY ") [Socket: "Boolean"]
+        1. "False" -> LINKED (Slot 1)
+           <--- (Wire #95) From: [Math.006] (Label: "T_LEFT") [Socket: "Value"]
+        2. "True" -> FREE [Value: 1.0]
+    Outputs:
+        0. "Output" -> LINKED (1 consumer)
+
+  Node: [Math.007] | LABEL: "Z_SCALE" (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #82) From: [Switch.002] (Label: "FADE_GATE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #83) From: [Sample Index.004] (Label: "READ_LENGTH") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Compare.008] | LABEL: "COLLAPSE_DONE" (Type: FunctionNodeCompare)
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #84) From: [Switch.001] (Label: "ECHO_SAFE") [Socket: "Output"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #85) From: [Sample Index.001] (Label: "READ_COLLAPSE ") [Socket: "Value"]
+    Outputs:
+        0. "Result" -> LINKED (1 consumer)
+
+  Node: [Boolean Math.008] | LABEL: "COL_FLY_ON" (Type: FunctionNodeBooleanMath)
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #86) From: [Compare.008] (Label: "COLLAPSE_DONE") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #87) From: [Compare.006] (Label: "WAS_RELEASED") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED (2 consumers)
+  undocumented_dna: 17
+
+MODULE FRAME: ======= IO =======
+
+  Node: [Group Input] | LABEL: "NONE" (Type: NodeGroupInput)
+    Outputs:
+        0. "Geometry" -> LINKED (1 consumer)
+
+  Node: [Group Output] | LABEL: "NONE" (Type: NodeGroupOutput)
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #48) From: [Join Geometry] (Label: "MERGE") [Socket: "Geometry"]
+
+  Node: [Join Geometry] | LABEL: "MERGE" (Type: GeometryNodeJoinGeometry)
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #47) From: [Group Input] (Label: "NONE") [Socket: "Geometry"]
+           <--- (Wire #99) From: [Realize Instances] (Label: "REALIZE_COL") [Socket: "Geometry"]
+    Outputs:
+        0. "Geometry" -> LINKED (1 consumer)
+  undocumented_dna: 3
+
+MODULE FRAME: ======= SPAWN  =======
+
+  Node: [Delete Geometry] | LABEL: "KEEP_NOTES" (Type: GeometryNodeDeleteGeometry)
+    PARAMETERS: DOMAIN: POINT, MODE: ALL
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #32) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Selection" -> LINKED (Slot 1)
+           <--- (Wire #35) From: [Boolean Math.006] (Label: "NOT_ALIVE") [Socket: "Boolean"]
+    Outputs:
+        0. "Geometry" -> LINKED (1 consumer)
+
+  Node: [Named Attribute.004] | LABEL: "ATTR_BURST_NML" (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR
+    Inputs:
+        0. "Name" -> FREE [Value: burst_normal]
+    Outputs:
+        0. "Attribute" -> LINKED (1 consumer)
+
+  Node: [Named Attribute.005] | LABEL: "ATTR_BURST_POS" (Type: GeometryNodeInputNamedAttribute)
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR
+    Inputs:
+        0. "Name" -> FREE [Value: burst_position]
+    Outputs:
+        0. "Attribute" -> LINKED (1 consumer)
+
+  Node: [Instance on Points] | LABEL: "SPAWN" (Type: GeometryNodeInstanceOnPoints)
+    Inputs:
+        0. "Points" -> LINKED (Slot 0)
+           <--- (Wire #46) From: [Set Position] (Label: "PLACE") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Instance" -> LINKED (Slot 2)
+           <--- (Wire #33) From: [Cube] (Label: "CUBE_COL") [Socket: "Mesh"]
+        6. "Scale" -> LINKED (Slot 6)
+           <--- (Wire #91) From: [Combine XYZ] (Label: "SCALE_VEC") [Socket: "Vector"]
+    Outputs:
+        0. "Instances" -> LINKED (1 consumer)
+
+  Node: [Cube] | LABEL: "CUBE_COL" (Type: GeometryNodeMeshCube)
+    Inputs:
+        0. "Size" -> FREE [Value: X=1.0, Y=1.0, Z=1.0]
+        1. "Vertices X" -> FREE [Value: 2]
+        2. "Vertices Y" -> FREE [Value: 2]
+        3. "Vertices Z" -> FREE [Value: 2]
+    Outputs:
+        0. "Mesh" -> LINKED (1 consumer)
+
+  Node: [Math.004] | LABEL: "SPEED" (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> FREE [Value: 0.05000000074505806]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #41) From: [Switch] (Label: "TIP_ELAPSED") [Socket: "Output"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Vector Math] | LABEL: "FLY" (Type: ShaderNodeVectorMath)
+    PARAMETERS: OPERATION: SCALE
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #58) From: [Named Attribute.004] (Label: "ATTR_BURST_NML") [Socket: "Attribute"]
+        3. "Scale" -> LINKED (Slot 3)
+           <--- (Wire #42) From: [Math.004] (Label: "SPEED") [Socket: "Value"]
+    Outputs:
+        0. "Vector" -> LINKED (1 consumer)
+
+  Node: [Vector Math.001] | LABEL: "WORLD_POS" (Type: ShaderNodeVectorMath)
+    PARAMETERS: OPERATION: ADD
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #43) From: [Named Attribute.005] (Label: "ATTR_BURST_POS") [Socket: "Attribute"]
+        1. "Vector" -> LINKED (Slot 1)
+           <--- (Wire #44) From: [Vector Math] (Label: "FLY") [Socket: "Vector"]
+    Outputs:
+        0. "Vector" -> LINKED (1 consumer)
+
+  Node: [Set Position] | LABEL: "PLACE" (Type: GeometryNodeSetPosition)
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #45) From: [Delete Geometry] (Label: "KEEP_NOTES") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Position" -> LINKED (Slot 2)
+           <--- (Wire #54) From: [Transform Point] (Label: "LOCAL_POS") [Socket: "Vector"]
+    Outputs:
+        0. "Geometry" -> LINKED (1 consumer)
+
+  Node: [Random Value] | LABEL: "RND_DIR" (Type: FunctionNodeRandomValue)
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR
+    Inputs:
+        0. "Min" -> FREE [Value: X=-1.0, Y=-1.0, Z=-1.0]
+        1. "Max" -> FREE [Value: X=1.0, Y=1.0, Z=1.0]
+        7. "ID" -> LINKED (Slot 7)
+           <--- (Wire #55) From: [Index] (Label: "POINT_INDEX") [Socket: "Index"]
+        8. "Seed" -> LINKED (Slot 8)
+           <--- (Wire #56) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Vector Math.002] | LABEL: "RND_NML" (Type: ShaderNodeVectorMath)
+    PARAMETERS: OPERATION: NORMALIZE
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #57) From: [Random Value] (Label: "RND_DIR") [Socket: "Value"]
+    Outputs:
+        0. "Vector" -> LINKED (1 consumer)
+
+  Node: [Combine XYZ] | LABEL: "SCALE_VEC" (Type: ShaderNodeCombineXYZ)
+    Inputs:
+        0. "X" -> LINKED (Slot 0)
+           <--- (Wire #88) From: [Sample Index.003] (Label: "READ_SIZE ") [Socket: "Value"]
+        1. "Y" -> LINKED (Slot 1)
+           <--- (Wire #89) From: [Sample Index.003] (Label: "READ_SIZE ") [Socket: "Value"]
+        2. "Z" -> LINKED (Slot 2)
+           <--- (Wire #90) From: [Math.007] (Label: "Z_SCALE") [Socket: "Value"]
+    Outputs:
+        0. "Vector" -> LINKED (1 consumer)
+
+  Node: [Math.008] | LABEL: "SHARD_ELAPSED" (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #100) From: [Switch.001] (Label: "ECHO_SAFE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #101) From: [Sample Index.001] (Label: "READ_COLLAPSE ") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Math.009] | LABEL: "FLY_DIST " (Type: ShaderNodeMath)
+    PARAMETERS: OPERATION: MAXIMUM, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #102) From: [Math.008] (Label: "SHARD_ELAPSED") [Socket: "Value"]
+        1. "Value" -> FREE [Value: 0.05000000074505806]
+    Outputs:
+        0. "Value" -> LINKED (1 consumer)
+
+  Node: [Switch.004] | LABEL: "OFF_GATE " (Type: GeometryNodeSwitch)
+    PARAMETERS: INPUT_TYPE: FLOAT
+    Inputs:
+        0. "Switch" -> LINKED (Slot 0)
+           <--- (Wire #103) From: [Boolean Math.008] (Label: "COL_FLY_ON") [Socket: "Boolean"]
+        2. "True" -> LINKED (Slot 2)
+           <--- (Wire #104) From: [Math.009] (Label: "FLY_DIST ") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED (1 consumer)
+
+  Node: [Vector Math.003] | LABEL: "CRUMB_VEC " (Type: ShaderNodeVectorMath)
+    PARAMETERS: OPERATION: SCALE
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #106) From: [Vector Math.002] (Label: "RND_NML") [Socket: "Vector"]
+        3. "Scale" -> LINKED (Slot 3)
+           <--- (Wire #105) From: [Switch.004] (Label: "OFF_GATE ") [Socket: "Output"]
+    Outputs:
+        0. "Vector" -> LINKED (1 consumer)
+  undocumented_dna: 16
+
+MODULE FRAME: ======= WORLD→LOCAL =======
+
+  Node: [Self Object] | LABEL: "SELF" (Type: GeometryNodeSelfObject)
+    Outputs:
+        0. "Self Object" -> LINKED (1 consumer)
+
+  Node: [Object Info.001] | LABEL: "OBJ_SELF" (Type: GeometryNodeObjectInfo)
+    PARAMETERS: TRANSFORM_SPACE: ORIGINAL
+    Inputs:
+        0. "Object" -> LINKED (Slot 0)
+           <--- (Wire #49) From: [Self Object] (Label: "SELF") [Socket: "Self Object"]
+    Outputs:
+        0. "Transform" -> LINKED (1 consumer)
+
+  Node: [Invert Matrix] | LABEL: "OBJ_INV" (Type: FunctionNodeInvertMatrix)
+    Inputs:
+        0. "Matrix" -> LINKED (Slot 0)
+           <--- (Wire #50) From: [Object Info.001] (Label: "OBJ_SELF") [Socket: "Transform"]
+    Outputs:
+        0. "Matrix" -> LINKED (2 consumers)
+
+  Node: [Transform Point] | LABEL: "LOCAL_POS" (Type: FunctionNodeTransformPoint)
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #51) From: [Vector Math.001] (Label: "WORLD_POS") [Socket: "Vector"]
+        1. "Transform" -> LINKED (Slot 1)
+           <--- (Wire #52) From: [Invert Matrix] (Label: "OBJ_INV") [Socket: "Matrix"]
+    Outputs:
+        0. "Vector" -> LINKED (1 consumer)
+
+  Node: [Transform Direction] | LABEL: "LOCAL_NML" (Type: FunctionNodeTransformDirection)
+    Inputs:
+        1. "Transform" -> LINKED (Slot 1)
+           <--- (Wire #53) From: [Invert Matrix] (Label: "OBJ_INV") [Socket: "Matrix"]
+  undocumented_dna: 5
+
+MODULE FRAME: ======= CRUMBS  =======
+
+  Node: [Realize Instances] | LABEL: "REALIZE_COL" (Type: GeometryNodeRealizeInstances)
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #98) From: [Set Position.001] (Label: "SET_CRUMB") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Realize All" -> FREE [Value: True]
+    Outputs:
+        0. "Geometry" -> LINKED (1 consumer)
+
+  Node: [Switch.003] | LABEL: "DUP_AMT" (Type: GeometryNodeSwitch)
+    PARAMETERS: INPUT_TYPE: INT
+    Inputs:
+        0. "Switch" -> LINKED (Slot 0)
+           <--- (Wire #92) From: [Boolean Math.008] (Label: "COL_FLY_ON") [Socket: "Boolean"]
+        1. "False" -> FREE [Value: 1]
+        2. "True" -> LINKED (Slot 2)
+           <--- (Wire #93) From: [Sample Index.002] (Label: "READ_COUNT ") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED (1 consumer)
+
+  Node: [Duplicate Elements] | LABEL: "DUP_CRUMBS" (Type: GeometryNodeDuplicateElements)
+    PARAMETERS: DOMAIN: INSTANCE
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #96) From: [Instance on Points] (Label: "SPAWN") [Socket: "Instances"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Amount" -> LINKED (Slot 2)
+           <--- (Wire #94) From: [Switch.003] (Label: "DUP_AMT") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED (1 consumer)
+
+  Node: [Set Position.001] | LABEL: "SET_CRUMB" (Type: GeometryNodeSetPosition)
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #97) From: [Duplicate Elements] (Label: "DUP_CRUMBS") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        3. "Offset" -> LINKED (Slot 3)
+           <--- (Wire #107) From: [Vector Math.003] (Label: "CRUMB_VEC ") [Socket: "Vector"]
+    Outputs:
+        0. "Geometry" -> LINKED (1 consumer)
+  undocumented_dna: 4
+
+## REROUTE BUSES (labeled only)
+reroutes_collapsed: 3 (unnamed hidden in LOGICAL wires)
+  (no labeled buses)
+
+================================================================================

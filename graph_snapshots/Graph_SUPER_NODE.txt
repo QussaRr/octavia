@@ -1,0 +1,333 @@
+================== ARCHITECTURE ANALYSIS: [GeometryNodes] (Graph_SUPER_NODE) ==================
+
+MODULE FRAME: ======= BUFFER & TIME =======
+
+  Node: [Object Info] | LABEL: "BUFFER" (Type: GeometryNodeObjectInfo)
+    DNA LOGIC: Not documented.
+    PARAMETERS: TRANSFORM_SPACE: ORIGINAL
+    Inputs:
+        0. "Object" -> FREE [Value: Octavia_Buffer_Ch_1]
+        1. "As Instance" -> FREE [Value: False]
+    Outputs:
+        0. "Transform" -> FREE
+        1. "Location" -> FREE
+        2. "Rotation" -> FREE
+        3. "Scale" -> FREE
+        4. "Geometry" -> LINKED
+           ---> (Wire #17) To: [Sample Index] (Label: "READ_FADE") [Slot 0: "Geometry"]
+
+  Node: [Scene Time] | LABEL: "TIME" (Type: GeometryNodeInputSceneTime)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Seconds" -> FREE
+        1. "Frame" -> LINKED
+           ---> (Wire #4) To: [Compare.002] (Label: "NOTE_HIT ") [Slot 1: "B"]
+           ---> (Wire #7) To: [Compare.004] (Label: "STILL_PLAYING ") [Slot 1: "B"]
+           ---> (Wire #15) To: [Math.001] (Label: "ECHO_ELAPSED ") [Slot 0: "Value"]
+           ---> (Wire #28) To: [Math.002] (Label: "ELAPSED_BODY") [Slot 0: "Value"]
+
+  Node: [Named Attribute] | LABEL: "ATTR_START" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'start_frame']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #2) To: [Compare.001] (Label: "HAS_NOTE ") [Slot 0: "A"]
+           ---> (Wire #3) To: [Compare.002] (Label: "NOTE_HIT ") [Slot 0: "A"]
+           ---> (Wire #29) To: [Math.002] (Label: "ELAPSED_BODY") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.001] | LABEL: "ATTR_END" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'end_frame']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #5) To: [Compare.003] (Label: "IS_HELD ") [Slot 0: "A"]
+           ---> (Wire #6) To: [Compare.004] (Label: "STILL_PLAYING ") [Slot 0: "A"]
+           ---> (Wire #16) To: [Math.001] (Label: "ECHO_ELAPSED ") [Slot 1: "Value"]
+           ---> (Wire #30) To: [Reroute] (Label: "NONE") [Slot 0: "Input"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.002] | LABEL: "ATTR_VOICE " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'octavia_voice_id']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #14) To: [Math] (Label: "VOICE_ADDR") [Slot 0: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Index] | LABEL: "POINT_INDEX" (Type: GeometryNodeInputIndex)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Index" -> LINKED
+           ---> (Wire #1) To: [Compare] (Label: "IS_NOTE_ZONE ") [Slot 0: "A"]
+
+MODULE FRAME: ======= SLOT FILTER =======
+
+  Node: [Compare] | LABEL: "IS_NOTE_ZONE " (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #1) From: [Index] (Label: "POINT_INDEX") [Socket: "Index"]
+        1. "B" -> FREE [Value: 128.0]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #11) To: [Boolean Math.002] (Label: "AND_1 ") [Slot 0: "Boolean"]
+
+  Node: [Compare.001] | LABEL: "HAS_NOTE " (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #2) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+        1. "B" -> FREE [Value: 0.5]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #12) To: [Boolean Math.002] (Label: "AND_1 ") [Slot 1: "Boolean"]
+
+  Node: [Compare.002] | LABEL: "NOTE_HIT " (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #3) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #4) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #31) To: [Reroute.002] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Compare.003] | LABEL: "IS_HELD " (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #5) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+        1. "B" -> FREE [Value: 0.0]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #8) To: [Boolean Math] (Label: "BODY_ACTIVE ") [Slot 1: "Boolean"]
+
+  Node: [Compare.004] | LABEL: "STILL_PLAYING " (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #6) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #7) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #9) To: [Boolean Math] (Label: "BODY_ACTIVE ") [Slot 0: "Boolean"]
+
+  Node: [Boolean Math] | LABEL: "BODY_ACTIVE " (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: OR
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #9) From: [Compare.004] (Label: "STILL_PLAYING ") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #8) From: [Compare.003] (Label: "IS_HELD ") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #10) To: [Boolean Math.001] (Label: "IN_BODY ") [Slot 1: "Boolean"]
+
+  Node: [Boolean Math.001] | LABEL: "IN_BODY " (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #34) From: [Reroute.002] (Label: "NONE") [Socket: "Output"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #10) From: [Boolean Math] (Label: "BODY_ACTIVE ") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #24) To: [Boolean Math.005] (Label: "ALIVE_TOTAL") [Slot 0: "Boolean"]
+
+  Node: [Boolean Math.002] | LABEL: "AND_1 " (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #11) From: [Compare] (Label: "IS_NOTE_ZONE ") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #12) From: [Compare.001] (Label: "HAS_NOTE ") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #13) To: [Boolean Math.003] (Label: "AND_2") [Slot 0: "Boolean"]
+
+  Node: [Boolean Math.003] | LABEL: "AND_2" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #13) From: [Boolean Math.002] (Label: "AND_1 ") [Socket: "Boolean"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #26) From: [Boolean Math.005] (Label: "ALIVE_TOTAL") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> FREE
+
+  Node: [Reroute.002] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #31) From: [Compare.002] (Label: "NOTE_HIT ") [Socket: "Result"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #34) To: [Boolean Math.001] (Label: "IN_BODY ") [Slot 0: "Boolean"]
+
+MODULE FRAME: ======= MACROS  =======
+
+  Node: [Math] | LABEL: "VOICE_ADDR" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #14) From: [Named Attribute.002] (Label: "ATTR_VOICE ") [Socket: "Attribute"]
+        1. "Value" -> FREE [Value: 128.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #18) To: [Sample Index] (Label: "READ_FADE") [Slot 2: "Index"]
+
+  Node: [StarterFade] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.003] | LABEL: "MACRO_FADE " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_StarterFade']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #19) To: [Sample Index] (Label: "READ_FADE") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index] | LABEL: "READ_FADE" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #17) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #19) From: [Named Attribute.003] (Label: "MACRO_FADE ") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #18) From: [Math] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #21) To: [Compare.007] (Label: "IN_ECHO") [Slot 1: "B"]
+
+MODULE FRAME: ======= ECHO & LIFE =======
+
+  Node: [Math.001] | LABEL: "ECHO_ELAPSED " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #15) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #16) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #20) To: [Compare.007] (Label: "IN_ECHO") [Slot 0: "A"]
+
+  Node: [Compare.006] | LABEL: "WAS_RELEASED" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #33) From: [Reroute.001] (Label: "NONE") [Socket: "Output"]
+        1. "B" -> FREE [Value: 0.5]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #23) To: [Boolean Math.004] (Label: "ECHO_ALIVE") [Slot 0: "Boolean"]
+
+  Node: [Compare.007] | LABEL: "IN_ECHO" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #20) From: [Math.001] (Label: "ECHO_ELAPSED ") [Socket: "Value"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #21) From: [Sample Index] (Label: "READ_FADE") [Socket: "Value"]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #22) To: [Boolean Math.004] (Label: "ECHO_ALIVE") [Slot 1: "Boolean"]
+
+  Node: [Boolean Math.004] | LABEL: "ECHO_ALIVE" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #23) From: [Compare.006] (Label: "WAS_RELEASED") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #22) From: [Compare.007] (Label: "IN_ECHO") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #25) To: [Boolean Math.005] (Label: "ALIVE_TOTAL") [Slot 1: "Boolean"]
+
+  Node: [Boolean Math.005] | LABEL: "ALIVE_TOTAL" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: OR
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #24) From: [Boolean Math.001] (Label: "IN_BODY ") [Socket: "Boolean"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #25) From: [Boolean Math.004] (Label: "ECHO_ALIVE") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #26) To: [Boolean Math.003] (Label: "AND_2") [Slot 1: "Boolean"]
+
+  Node: [Math.002] | LABEL: "ELAPSED_BODY" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #28) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #29) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Reroute] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #30) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #32) To: [Reroute.001] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.001] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #32) From: [Reroute] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #33) To: [Compare.006] (Label: "WAS_RELEASED") [Slot 0: "A"]
+
+MODULE FRAME: ======= IO =======
+
+  Node: [Group Input] | LABEL: "NONE" (Type: NodeGroupInput)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #27) To: [Group Output] (Label: "NONE") [Slot 0: "Geometry"]
+        1. "" -> FREE
+
+  Node: [Group Output] | LABEL: "NONE" (Type: NodeGroupOutput)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #27) From: [Group Input] (Label: "NONE") [Socket: "Geometry"]
+        1. "" -> FREE
+
+================================================================================

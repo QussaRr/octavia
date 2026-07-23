@@ -1,0 +1,2466 @@
+================== ARCHITECTURE ANALYSIS: [Octavia Channel 1] (Graph_GRAPH_KICK_CUBES) ==================
+
+MODULE FRAME: ======= BUFFER & TIME =======
+
+  Node: [Group Input] | LABEL: "NONE" (Type: NodeGroupInput)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #177) To: [Reroute.046] (Label: "NONE") [Slot 0: "Input"]
+        1. "" -> FREE
+
+  Node: [Object Info] | LABEL: "BUFFER" (Type: GeometryNodeObjectInfo)
+    DNA LOGIC: Not documented.
+    PARAMETERS: TRANSFORM_SPACE: ORIGINAL
+    Inputs:
+        0. "Object" -> FREE [Value: Octavia_Buffer_Ch_1]
+        1. "As Instance" -> FREE [Value: False]
+    Outputs:
+        0. "Transform" -> FREE
+        1. "Location" -> FREE
+        2. "Rotation" -> FREE
+        3. "Scale" -> FREE
+        4. "Geometry" -> LINKED
+           ---> (Wire #11) To: [Sample Index] (Label: "READ_SPEED") [Slot 0: "Geometry"]
+           ---> (Wire #12) To: [Sample Index.001] (Label: "READ_SIZE") [Slot 0: "Geometry"]
+           ---> (Wire #13) To: [Sample Index.002] (Label: "READ_FADE") [Slot 0: "Geometry"]
+           ---> (Wire #22) To: [Sample Index.003] (Label: "READ_REACH") [Slot 0: "Geometry"]
+           ---> (Wire #35) To: [Sample Index.004] (Label: "READ_LENGTH") [Slot 0: "Geometry"]
+           ---> (Wire #39) To: [Sample Index.005] (Label: "READ_SNAP") [Slot 0: "Geometry"]
+           ---> (Wire #42) To: [Sample Index.006] (Label: "READ_BURST ") [Slot 0: "Geometry"]
+           ---> (Wire #59) To: [Sample Index.008] (Label: "READ_COLLAPSE") [Slot 0: "Geometry"]
+           ---> (Wire #87) To: [Sample Index.011] (Label: "READ_COL_COUNT") [Slot 0: "Geometry"]
+           ---> (Wire #109) To: [Sample Index.012] (Label: "READ_COL_SPEED") [Slot 0: "Geometry"]
+           ---> (Wire #110) To: [Sample Index.013] (Label: "READ_COL_REACH") [Slot 0: "Geometry"]
+           ---> (Wire #133) To: [Sample Index.014] (Label: "READ_PLATE") [Slot 0: "Geometry"]
+           ---> (Wire #155) To: [Sample Index.015] (Label: "READ_COLS") [Slot 0: "Geometry"]
+           ---> (Wire #178) To: [Reroute] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Scene Time] | LABEL: "TIME" (Type: GeometryNodeInputSceneTime)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Seconds" -> FREE
+        1. "Frame" -> LINKED
+           ---> (Wire #4) To: [Compare.002] (Label: "NOTE_HIT") [Slot 1: "B"]
+           ---> (Wire #5) To: [Math] (Label: "ELAPSED") [Slot 0: "Value"]
+           ---> (Wire #29) To: [Compare.005] (Label: "STILL_PLAYING") [Slot 1: "B"]
+           ---> (Wire #30) To: [Math.009] (Label: "ECHO_ELAPSED") [Slot 0: "Value"]
+
+  Node: [Index] | LABEL: "POINT_INDEX" (Type: GeometryNodeInputIndex)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Index" -> LINKED
+           ---> (Wire #1) To: [Compare] (Label: "IS_NOTE_ZONE") [Slot 0: "A"]
+
+  Node: [Named Attribute] | LABEL: "ATTR_START" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'start_frame']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #2) To: [Compare.001] (Label: "HAS_NOTE") [Slot 0: "A"]
+           ---> (Wire #3) To: [Compare.002] (Label: "NOTE_HIT") [Slot 0: "A"]
+           ---> (Wire #6) To: [Math] (Label: "ELAPSED") [Slot 1: "Value"]
+           ---> (Wire #179) To: [Reroute.037] (Label: "NONE") [Slot 0: "Input"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.001] | LABEL: "ATTR_END" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'end_frame']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #28) To: [Compare.005] (Label: "STILL_PLAYING") [Slot 0: "A"]
+           ---> (Wire #31) To: [Math.009] (Label: "ECHO_ELAPSED") [Slot 1: "Value"]
+           ---> (Wire #180) To: [Reroute.002] (Label: "NONE") [Slot 0: "Input"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.002] | LABEL: "ATTR_VOICE" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'octavia_voice_id']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #10) To: [Math.001] (Label: "VOICE_ADDR") [Slot 0: "Value"]
+        1. "Exists" -> FREE
+
+MODULE FRAME: ======= SLOT FILTER =======
+
+  Node: [Compare] | LABEL: "IS_NOTE_ZONE" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #1) From: [Index] (Label: "POINT_INDEX") [Socket: "Index"]
+        1. "B" -> FREE [Value: 128.0]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #7) To: [Boolean Math] (Label: "AND_1") [Slot 0: "Boolean"]
+
+  Node: [Compare.001] | LABEL: "HAS_NOTE" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #2) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+        1. "B" -> FREE [Value: 0.5]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #8) To: [Boolean Math] (Label: "AND_1") [Slot 1: "Boolean"]
+
+  Node: [Compare.002] | LABEL: "NOTE_HIT" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #3) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #4) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #47) To: [Boolean Math.016] (Label: "BODY_ACTIVE") [Slot 1: "Boolean"]
+           ---> (Wire #181) To: [Reroute.007] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Math] | LABEL: "ELAPSED" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #5) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #6) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #25) To: [Math.002] (Label: "STEP ") [Slot 1: "Value"]
+
+  Node: [Boolean Math] | LABEL: "AND_1" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #7) From: [Compare] (Label: "IS_NOTE_ZONE") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #8) From: [Compare.001] (Label: "HAS_NOTE") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #9) To: [Boolean Math.001] (Label: "AND_2") [Slot 0: "Boolean"]
+
+  Node: [Boolean Math.001] | LABEL: "AND_2" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #9) From: [Boolean Math] (Label: "AND_1") [Socket: "Boolean"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #233) From: [Reroute.007] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #182) To: [Reroute.021] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Compare.004] | LABEL: "IS_HELD" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #230) From: [Reroute.003] (Label: "NONE") [Socket: "Output"]
+        1. "B" -> FREE [Value: 0.0]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #48) To: [Boolean Math.017] (Label: "IN_BODY") [Slot 0: "Boolean"]
+
+  Node: [Compare.005] | LABEL: "STILL_PLAYING" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #28) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #29) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #46) To: [Boolean Math.016] (Label: "BODY_ACTIVE") [Slot 0: "Boolean"]
+
+  Node: [Boolean Math.016] | LABEL: "BODY_ACTIVE" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #46) From: [Compare.005] (Label: "STILL_PLAYING") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #47) From: [Compare.002] (Label: "NOTE_HIT") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #49) To: [Boolean Math.017] (Label: "IN_BODY") [Slot 1: "Boolean"]
+
+  Node: [Boolean Math.017] | LABEL: "IN_BODY" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: OR
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #48) From: [Compare.004] (Label: "IS_HELD") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #49) From: [Boolean Math.016] (Label: "BODY_ACTIVE") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #194) To: [Reroute.014] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.007] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #181) From: [Compare.002] (Label: "NOTE_HIT") [Socket: "Result"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #233) To: [Boolean Math.001] (Label: "AND_2") [Slot 1: "Boolean"]
+
+MODULE FRAME: ======= MACROS =======
+
+  Node: [KickSpeed] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [KickSize] | LABEL: "0.25" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [KickFade] | LABEL: "20" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.003] | LABEL: "MACRO_SPEED" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickSpeed']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #14) To: [Sample Index] (Label: "READ_SPEED") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.004] | LABEL: "MACRO_FADE" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickFade']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #16) To: [Sample Index.002] (Label: "READ_FADE") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.005] | LABEL: "MACRO_SIZE" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickSize']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #15) To: [Sample Index.001] (Label: "READ_SIZE") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Math.001] | LABEL: "VOICE_ADDR" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #10) From: [Named Attribute.002] (Label: "ATTR_VOICE") [Socket: "Attribute"]
+        1. "Value" -> FREE [Value: 128.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #17) To: [Sample Index] (Label: "READ_SPEED") [Slot 2: "Index"]
+           ---> (Wire #18) To: [Sample Index.001] (Label: "READ_SIZE") [Slot 2: "Index"]
+           ---> (Wire #19) To: [Sample Index.002] (Label: "READ_FADE") [Slot 2: "Index"]
+           ---> (Wire #24) To: [Sample Index.003] (Label: "READ_REACH") [Slot 2: "Index"]
+           ---> (Wire #36) To: [Sample Index.004] (Label: "READ_LENGTH") [Slot 2: "Index"]
+           ---> (Wire #40) To: [Sample Index.005] (Label: "READ_SNAP") [Slot 2: "Index"]
+           ---> (Wire #43) To: [Sample Index.006] (Label: "READ_BURST ") [Slot 2: "Index"]
+           ---> (Wire #60) To: [Sample Index.008] (Label: "READ_COLLAPSE") [Slot 2: "Index"]
+           ---> (Wire #88) To: [Sample Index.011] (Label: "READ_COL_COUNT") [Slot 2: "Index"]
+           ---> (Wire #113) To: [Sample Index.012] (Label: "READ_COL_SPEED") [Slot 2: "Index"]
+           ---> (Wire #114) To: [Sample Index.013] (Label: "READ_COL_REACH") [Slot 2: "Index"]
+           ---> (Wire #134) To: [Sample Index.014] (Label: "READ_PLATE") [Slot 2: "Index"]
+           ---> (Wire #154) To: [Sample Index.015] (Label: "READ_COLS") [Slot 2: "Index"]
+
+  Node: [Sample Index] | LABEL: "READ_SPEED" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #11) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #14) From: [Named Attribute.003] (Label: "MACRO_SPEED") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #17) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #20) To: [Math.002] (Label: "STEP ") [Slot 0: "Value"]
+
+  Node: [Sample Index.001] | LABEL: "READ_SIZE" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #12) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #15) From: [Named Attribute.005] (Label: "MACRO_SIZE") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #18) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #183) To: [Reroute.044] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Sample Index.002] | LABEL: "READ_FADE" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #13) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #16) From: [Named Attribute.004] (Label: "MACRO_FADE") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #19) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #33) To: [Compare.006] (Label: "IN_ECHO") [Slot 1: "B"]
+           ---> (Wire #68) To: [Math.045] (Label: "SHARD_SPAN") [Slot 0: "Value"]
+
+  Node: [KickReach] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.006] | LABEL: "MACRO_REACH" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickReach']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #23) To: [Sample Index.003] (Label: "READ_REACH") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index.003] | LABEL: "READ_REACH" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #22) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #23) From: [Named Attribute.006] (Label: "MACRO_REACH") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #24) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #185) To: [Reroute.045] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [KickLength] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.007] | LABEL: "MACRO_LENGTH" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickLength']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #37) To: [Sample Index.004] (Label: "READ_LENGTH") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index.004] | LABEL: "READ_LENGTH" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #35) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #37) From: [Named Attribute.007] (Label: "MACRO_LENGTH") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #36) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #191) To: [Reroute.034] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [KickSnap] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.008] | LABEL: "MACRO_SNAP" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickSnap']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #38) To: [Sample Index.005] (Label: "READ_SNAP") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index.005] | LABEL: "READ_SNAP" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #39) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #38) From: [Named Attribute.008] (Label: "MACRO_SNAP") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #40) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #62) To: [Math.040] (Label: "SNAP_SCALE") [Slot 0: "Value"]
+
+  Node: [KickBurst] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.009] | LABEL: "MACRO_BURST " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickBurst']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #41) To: [Sample Index.006] (Label: "READ_BURST ") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index.006] | LABEL: "READ_BURST " (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #42) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #41) From: [Named Attribute.009] (Label: "MACRO_BURST ") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #43) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #193) To: [Reroute.041] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [KickCollapse] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.011] | LABEL: "MACRO_COLLAPSE" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickCollapse']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #58) To: [Sample Index.008] (Label: "READ_COLLAPSE") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index.008] | LABEL: "READ_COLLAPSE" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #59) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #58) From: [Named Attribute.011] (Label: "MACRO_COLLAPSE") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #60) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #61) To: [Math.014] (Label: "T_NORM") [Slot 1: "Value"]
+           ---> (Wire #69) To: [Math.045] (Label: "SHARD_SPAN") [Slot 1: "Value"]
+           ---> (Wire #196) To: [Reroute.011] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [KickColCount] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Sample Index.011] | LABEL: "READ_COL_COUNT" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #87) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #86) From: [Named Attribute.016] (Label: "MACRO_COL_COUNT") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #88) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #200) To: [Reroute.052] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Named Attribute.016] | LABEL: "MACRO_COL_COUNT" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickColCount']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #86) To: [Sample Index.011] (Label: "READ_COL_COUNT") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [KickColSpeed] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [KickColReach] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.020] | LABEL: "MACRO_COL_SPEED " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickColSpeed']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #107) To: [Sample Index.012] (Label: "READ_COL_SPEED") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.021] | LABEL: "MACRO_COL_REACH " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickColReach']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #108) To: [Sample Index.013] (Label: "READ_COL_REACH") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index.012] | LABEL: "READ_COL_SPEED" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #109) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #107) From: [Named Attribute.020] (Label: "MACRO_COL_SPEED ") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #113) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #202) To: [Reroute.054] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Sample Index.013] | LABEL: "READ_COL_REACH" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #110) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #108) From: [Named Attribute.021] (Label: "MACRO_COL_REACH ") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #114) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #203) To: [Reroute.055] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [KickPlate] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.025] | LABEL: "MACRO_PLATE " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickPlate']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #132) To: [Sample Index.014] (Label: "READ_PLATE") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index.014] | LABEL: "READ_PLATE" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #133) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #132) From: [Named Attribute.025] (Label: "MACRO_PLATE ") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #134) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #206) To: [Reroute.029] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [KickCols] | LABEL: "NONE" (Type: ShaderNodeValue)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Value" -> FREE
+
+  Node: [Named Attribute.027] | LABEL: "MACRO_COLS " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'oc_m_KickCols']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #153) To: [Sample Index.015] (Label: "READ_COLS") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Sample Index.015] | LABEL: "READ_COLS" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #155) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #153) From: [Named Attribute.027] (Label: "MACRO_COLS ") [Socket: "Attribute"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #154) From: [Math.001] (Label: "VOICE_ADDR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #156) To: [Math.011] (Label: "COLS_AMT ") [Slot 0: "Value"]
+
+MODULE FRAME: ======= MOTION & FADE =======
+
+  Node: [Math.002] | LABEL: "STEP " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #20) From: [Sample Index] (Label: "READ_SPEED") [Socket: "Value"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #25) From: [Math] (Label: "ELAPSED") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #184) To: [Reroute.048] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Math.006] | LABEL: "REACH_NORM" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #259) From: [Reroute.049] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #170) From: [Math.019] (Label: "REACH_SAFE") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #26) To: [Math.007] (Label: "DENOM") [Slot 0: "Value"]
+
+  Node: [Math.007] | LABEL: "DENOM" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #26) From: [Math.006] (Label: "REACH_NORM") [Socket: "Value"]
+        1. "Value" -> FREE [Value: 1.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #27) To: [Math.008] (Label: "FLY_Z ") [Slot 1: "Value"]
+
+  Node: [Math.008] | LABEL: "FLY_Z " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #260) From: [Reroute.049] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #27) From: [Math.007] (Label: "DENOM") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #150) To: [Vector Math.005] (Label: "COL_OFF") [Slot 3: "Scale"]
+
+  Node: [Math.009] | LABEL: "ECHO_ELAPSED" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #30) From: [Scene Time] (Label: "TIME") [Socket: "Frame"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #31) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #32) To: [Compare.006] (Label: "IN_ECHO") [Slot 0: "A"]
+           ---> (Wire #50) To: [Compare.010] (Label: "ECHO_STARTED") [Slot 0: "A"]
+           ---> (Wire #57) To: [Math.014] (Label: "T_NORM") [Slot 0: "Value"]
+           ---> (Wire #187) To: [Reroute.008] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Compare.006] | LABEL: "IN_ECHO" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #32) From: [Math.009] (Label: "ECHO_ELAPSED") [Socket: "Value"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #33) From: [Sample Index.002] (Label: "READ_FADE") [Socket: "Value"]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #52) To: [Boolean Math.018] (Label: "IN_ECHO_FIX") [Slot 1: "Boolean"]
+
+  Node: [Compare.007] | LABEL: "WAS_RELEASED" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #234) From: [Reroute.010] (Label: "NONE") [Socket: "Output"]
+        1. "B" -> FREE [Value: 0.5]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #34) To: [Boolean Math.005] (Label: "ECHO_ALIVE") [Slot 0: "Boolean"]
+           ---> (Wire #188) To: [Reroute.026] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Boolean Math.005] | LABEL: "ECHO_ALIVE" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #34) From: [Compare.007] (Label: "WAS_RELEASED") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #53) From: [Boolean Math.018] (Label: "IN_ECHO_FIX") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #82) To: [Boolean Math.021] (Label: "COL_VISIBLE ") [Slot 1: "Boolean"]
+
+  Node: [Switch] | LABEL: "FADE_GATE" (Type: GeometryNodeSwitch)
+    DNA LOGIC: Not documented.
+    PARAMETERS: INPUT_TYPE: FLOAT
+    Inputs:
+        0. "Switch" -> LINKED (Slot 0)
+           <--- (Wire #244) From: [Reroute.017] (Label: "NONE") [Socket: "Output"]
+        1. "False" -> LINKED (Slot 1)
+           <--- (Wire #64) From: [Math.042] (Label: "COLLAPSE_GATE") [Socket: "Value"]
+        2. "True" -> FREE [Value: 1.0]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #135) To: [Mix] (Label: "Z_FAC") [Slot 0: "Factor"]
+           ---> (Wire #189) To: [Reroute.012] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Math.010] | LABEL: "Z_SCALE" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #136) From: [Mix] (Label: "Z_FAC") [Socket: "Result"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #249) From: [Reroute.034] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #190) To: [Reroute.032] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Math.014] | LABEL: "T_NORM" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: True
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #57) From: [Math.009] (Label: "ECHO_ELAPSED") [Socket: "Value"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #61) From: [Sample Index.008] (Label: "READ_COLLAPSE") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #192) To: [Reroute.004] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Compare.010] | LABEL: "ECHO_STARTED" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #50) From: [Math.009] (Label: "ECHO_ELAPSED") [Socket: "Value"]
+        1. "B" -> FREE [Value: 0.0]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #51) To: [Boolean Math.018] (Label: "IN_ECHO_FIX") [Slot 0: "Boolean"]
+
+  Node: [Boolean Math.018] | LABEL: "IN_ECHO_FIX" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #51) From: [Compare.010] (Label: "ECHO_STARTED") [Socket: "Result"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #52) From: [Compare.006] (Label: "IN_ECHO") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #53) To: [Boolean Math.005] (Label: "ECHO_ALIVE") [Slot 1: "Boolean"]
+
+  Node: [Math.040] | LABEL: "SNAP_SCALE" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #62) From: [Sample Index.005] (Label: "READ_SNAP") [Socket: "Value"]
+        1. "Value" -> FREE [Value: 4.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #63) To: [Math.041] (Label: "SNAP_PWR") [Slot 1: "Value"]
+
+  Node: [Math.041] | LABEL: "SNAP_PWR" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> FREE [Value: 1.0]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #63) From: [Math.040] (Label: "SNAP_SCALE") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #65) To: [Math.043] (Label: "T_POW ") [Slot 1: "Value"]
+
+  Node: [Math.042] | LABEL: "COLLAPSE_GATE" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> FREE [Value: 1.0]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #66) From: [Math.043] (Label: "T_POW ") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #64) To: [Switch] (Label: "FADE_GATE") [Slot 1: "False"]
+
+  Node: [Math.043] | LABEL: "T_POW " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: POWER, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #221) From: [Reroute.004] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #65) From: [Math.041] (Label: "SNAP_PWR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #66) To: [Math.042] (Label: "COLLAPSE_GATE") [Slot 1: "Value"]
+
+  Node: [Math.044] | LABEL: "SHARD_ELAPSED" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #236) From: [Reroute.009] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #237) From: [Reroute.011] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #71) To: [Math.004] (Label: "SHARD_T_NORM") [Slot 0: "Value"]
+           ---> (Wire #171) To: [Math.049] (Label: "SHARD_ELAPSED_POS") [Slot 0: "Value"]
+
+  Node: [Math.045] | LABEL: "SHARD_SPAN" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #68) From: [Sample Index.002] (Label: "READ_FADE") [Socket: "Value"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #69) From: [Sample Index.008] (Label: "READ_COLLAPSE") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #70) To: [Math.003] (Label: "SHARD_SPAN_SAFE") [Slot 0: "Value"]
+
+  Node: [Math.003] | LABEL: "SHARD_SPAN_SAFE" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MAXIMUM, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #70) From: [Math.045] (Label: "SHARD_SPAN") [Socket: "Value"]
+        1. "Value" -> FREE [Value: 1.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #72) To: [Math.004] (Label: "SHARD_T_NORM") [Slot 1: "Value"]
+
+  Node: [Math.004] | LABEL: "SHARD_T_NORM" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: True
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #71) From: [Math.044] (Label: "SHARD_ELAPSED") [Socket: "Value"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #72) From: [Math.003] (Label: "SHARD_SPAN_SAFE") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #197) To: [Reroute.027] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Math.049] | LABEL: "SHARD_ELAPSED_POS" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MAXIMUM, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #171) From: [Math.044] (Label: "SHARD_ELAPSED") [Socket: "Value"]
+        1. "Value" -> FREE [Value: 0.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #112) To: [Switch.005] (Label: "COL_ELAPSED_GATE ") [Slot 2: "True"]
+
+  Node: [Mix] | LABEL: "Z_FAC" (Type: ShaderNodeMix)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, CLAMP_FACTOR: True, CLAMP_RESULT: False
+    Inputs:
+        0. "Factor" -> LINKED (Slot 0)
+           <--- (Wire #135) From: [Switch] (Label: "FADE_GATE") [Socket: "Output"]
+        2. "A" -> LINKED (Slot 2)
+           <--- (Wire #245) From: [Reroute.029] (Label: "NONE") [Socket: "Output"]
+        3. "B" -> FREE [Value: 1.0]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #136) To: [Math.010] (Label: "Z_SCALE") [Slot 0: "Value"]
+
+  Node: [Random Value.001] | LABEL: "RND_CREACH_COL" (Type: FunctionNodeRandomValue)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        2. "Min" -> FREE [Value: 0.0]
+        3. "Max" -> FREE [Value: 1.0]
+        7. "ID" -> LINKED (Slot 7)
+           <--- (Wire #167) From: [Math.013] (Label: "FACE_ID ") [Socket: "Value"]
+        8. "Seed" -> FREE [Value: 53]
+    Outputs:
+        1. "Value" -> LINKED
+           ---> (Wire #168) To: [Math.015] (Label: "REACH_I") [Slot 1: "Value"]
+
+  Node: [Math.015] | LABEL: "REACH_I" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #256) From: [Reroute.045] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #168) From: [Random Value.001] (Label: "RND_CREACH_COL") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #169) To: [Math.019] (Label: "REACH_SAFE") [Slot 0: "Value"]
+
+  Node: [Math.019] | LABEL: "REACH_SAFE" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MAXIMUM, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #169) From: [Math.015] (Label: "REACH_I") [Socket: "Value"]
+        1. "Value" -> FREE [Value: 0.0010000000474974513]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #170) To: [Math.006] (Label: "REACH_NORM") [Slot 1: "Value"]
+
+  Node: [Reroute.004] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #192) From: [Math.014] (Label: "T_NORM") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #221) To: [Math.043] (Label: "T_POW ") [Slot 0: "Value"]
+
+  Node: [Reroute.008] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #187) From: [Math.009] (Label: "ECHO_ELAPSED") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #212) To: [Reroute.009] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.009] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #212) From: [Reroute.008] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #235) To: [Reroute.018] (Label: "NONE") [Slot 0: "Input"]
+           ---> (Wire #236) To: [Math.044] (Label: "SHARD_ELAPSED") [Slot 0: "Value"]
+
+  Node: [Reroute.048] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #184) From: [Math.002] (Label: "STEP ") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #217) To: [Reroute.049] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.049] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #217) From: [Reroute.048] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #259) To: [Math.006] (Label: "REACH_NORM") [Slot 0: "Value"]
+           ---> (Wire #260) To: [Math.008] (Label: "FLY_Z ") [Slot 0: "Value"]
+
+MODULE FRAME: ======= COL_SPAWN =======
+
+  Node: [Delete Geometry] | LABEL: "DROP_COL" (Type: GeometryNodeDeleteGeometry)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DOMAIN: POINT, MODE: ALL
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #246) From: [Reroute.031] (Label: "NONE") [Socket: "Output"]
+        1. "Selection" -> LINKED (Slot 1)
+           <--- (Wire #45) From: [Boolean Math.014] (Label: "NOT_COL") [Socket: "Boolean"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #157) To: [Duplicate Elements] (Label: "DUP_COLS") [Slot 0: "Geometry"]
+
+  Node: [Set Position] | LABEL: "PLACE_COL" (Type: GeometryNodeSetPosition)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #176) From: [Duplicate Elements] (Label: "DUP_COLS") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Position" -> LINKED (Slot 2)
+           <--- (Wire #152) From: [Vector Math.006] (Label: "COL_POS_N") [Socket: "Vector"]
+        3. "Offset" -> FREE [Value: X=0.0, Y=0.0, Z=0.0]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #160) To: [Store Named Attribute.007] (Label: "STORE_NML") [Slot 0: "Geometry"]
+
+  Node: [Instance on Points] | LABEL: "SPAWN_COL" (Type: GeometryNodeInstanceOnPoints)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Points" -> LINKED (Slot 0)
+           <--- (Wire #118) From: [Store Named Attribute.006] (Label: "STORE_COL_ELAPSED") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Instance" -> LINKED (Slot 2)
+           <--- (Wire #78) From: [Instance on Points.002] (Label: "BUILD_GRID") [Socket: "Instances"]
+        3. "Pick Instance" -> FREE [Value: False]
+        4. "Instance Index" -> FREE [Value: 0]
+        5. "Rotation" -> LINKED (Slot 5)
+           <--- (Wire #273) From: [Reroute.051] (Label: "NONE") [Socket: "Output"]
+        6. "Scale" -> LINKED (Slot 6)
+           <--- (Wire #274) From: [Reroute.053] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Instances" -> LINKED
+           ---> (Wire #79) To: [Realize Instances] (Label: "REALIZE_COL") [Slot 0: "Geometry"]
+
+  Node: [Combine XYZ.001] | LABEL: "SCALE_VEC" (Type: ShaderNodeCombineXYZ)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "X" -> LINKED (Slot 0)
+           <--- (Wire #83) From: [Math.020] (Label: "XY_BURST") [Socket: "Value"]
+        1. "Y" -> LINKED (Slot 1)
+           <--- (Wire #84) From: [Math.020] (Label: "XY_BURST") [Socket: "Value"]
+        2. "Z" -> LINKED (Slot 2)
+           <--- (Wire #255) From: [Reroute.033] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #186) To: [Reroute.053] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Math.018] | LABEL: "FLAT" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> FREE [Value: 1.0]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #219) From: [Reroute.012] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #56) To: [Math.027] (Label: "BURST_FACTOR") [Slot 0: "Value"]
+
+  Node: [Math.027] | LABEL: "BURST_FACTOR" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #56) From: [Math.018] (Label: "FLAT") [Socket: "Value"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #253) From: [Reroute.041] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #44) To: [Math.028] (Label: "ONE_PLUS_BURST ") [Slot 1: "Value"]
+
+  Node: [Math.028] | LABEL: "ONE_PLUS_BURST " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> FREE [Value: 1.0]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #44) From: [Math.027] (Label: "BURST_FACTOR") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #55) To: [Math.020] (Label: "XY_BURST") [Slot 1: "Value"]
+
+  Node: [Math.035] | LABEL: "SHARD_LIFE" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: True
+    Inputs:
+        0. "Value" -> FREE [Value: 1.0]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #248) From: [Reroute.028] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #96) To: [Switch.004] (Label: "COL_LIFE_GATE ") [Slot 2: "True"]
+
+  Node: [Math.020] | LABEL: "XY_BURST" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #254) From: [Reroute.044] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #55) From: [Math.028] (Label: "ONE_PLUS_BURST ") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #83) To: [Combine XYZ.001] (Label: "SCALE_VEC") [Slot 0: "X"]
+           ---> (Wire #84) To: [Combine XYZ.001] (Label: "SCALE_VEC") [Slot 1: "Y"]
+
+  Node: [Cube.001] | LABEL: "CUBE_GRID" (Type: GeometryNodeMeshCube)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Size" -> FREE [Value: X=1.0, Y=1.0, Z=1.0]
+        1. "Vertices X" -> FREE [Value: 4]
+        2. "Vertices Y" -> FREE [Value: 4]
+        3. "Vertices Z" -> FREE [Value: 8]
+    Outputs:
+        0. "Mesh" -> LINKED
+           ---> (Wire #73) To: [Mesh to Points] (Label: "GRID_POINTS") [Slot 0: "Mesh"]
+        1. "UV Map" -> FREE
+
+  Node: [Mesh to Points] | LABEL: "GRID_POINTS" (Type: GeometryNodeMeshToPoints)
+    DNA LOGIC: Not documented.
+    PARAMETERS: MODE: VERTICES
+    Inputs:
+        0. "Mesh" -> LINKED (Slot 0)
+           <--- (Wire #73) From: [Cube.001] (Label: "CUBE_GRID") [Socket: "Mesh"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Position" -> FREE [Value: X=0.0, Y=0.0, Z=0.0]
+        3. "Radius" -> FREE [Value: 0.05000000074505806]
+    Outputs:
+        0. "Points" -> LINKED
+           ---> (Wire #75) To: [Instance on Points.002] (Label: "BUILD_GRID") [Slot 0: "Points"]
+
+  Node: [Cube.002] | LABEL: "CUBE_CELL" (Type: GeometryNodeMeshCube)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Size" -> FREE [Value: X=1.0, Y=1.0, Z=1.0]
+        1. "Vertices X" -> FREE [Value: 2]
+        2. "Vertices Y" -> FREE [Value: 2]
+        3. "Vertices Z" -> FREE [Value: 2]
+    Outputs:
+        0. "Mesh" -> LINKED
+           ---> (Wire #76) To: [Instance on Points.002] (Label: "BUILD_GRID") [Slot 2: "Instance"]
+        1. "UV Map" -> FREE
+
+  Node: [Math.016] | LABEL: "CELL_XY" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> FREE [Value: 1.0]
+        1. "Value" -> FREE [Value: 3.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #80) To: [Combine XYZ.004] (Label: "CELL_SCALE") [Slot 0: "X"]
+           ---> (Wire #81) To: [Combine XYZ.004] (Label: "CELL_SCALE") [Slot 1: "Y"]
+
+  Node: [Math.017] | LABEL: "CELL_Z" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> FREE [Value: 1.0]
+        1. "Value" -> FREE [Value: 7.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #74) To: [Combine XYZ.004] (Label: "CELL_SCALE") [Slot 2: "Z"]
+
+  Node: [Combine XYZ.004] | LABEL: "CELL_SCALE" (Type: ShaderNodeCombineXYZ)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "X" -> LINKED (Slot 0)
+           <--- (Wire #80) From: [Math.016] (Label: "CELL_XY") [Socket: "Value"]
+        1. "Y" -> LINKED (Slot 1)
+           <--- (Wire #81) From: [Math.016] (Label: "CELL_XY") [Socket: "Value"]
+        2. "Z" -> LINKED (Slot 2)
+           <--- (Wire #74) From: [Math.017] (Label: "CELL_Z") [Socket: "Value"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #77) To: [Instance on Points.002] (Label: "BUILD_GRID") [Slot 6: "Scale"]
+
+  Node: [Instance on Points.002] | LABEL: "BUILD_GRID" (Type: GeometryNodeInstanceOnPoints)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Points" -> LINKED (Slot 0)
+           <--- (Wire #75) From: [Mesh to Points] (Label: "GRID_POINTS") [Socket: "Points"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Instance" -> LINKED (Slot 2)
+           <--- (Wire #76) From: [Cube.002] (Label: "CUBE_CELL") [Socket: "Mesh"]
+        3. "Pick Instance" -> FREE [Value: False]
+        4. "Instance Index" -> FREE [Value: 0]
+        5. "Rotation" -> FREE [Value: X=0.0, Y=0.0, Z=0.0]
+        6. "Scale" -> LINKED (Slot 6)
+           <--- (Wire #77) From: [Combine XYZ.004] (Label: "CELL_SCALE") [Socket: "Vector"]
+    Outputs:
+        0. "Instances" -> LINKED
+           ---> (Wire #78) To: [Instance on Points] (Label: "SPAWN_COL") [Slot 2: "Instance"]
+
+  Node: [Realize Instances] | LABEL: "REALIZE_COL" (Type: GeometryNodeRealizeInstances)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #79) From: [Instance on Points] (Label: "SPAWN_COL") [Socket: "Instances"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Realize All" -> FREE [Value: True]
+        3. "Depth" -> FREE [Value: 0]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #93) To: [Delete Geometry.002] (Label: "THIN_CRUMBS") [Slot 0: "Geometry"]
+
+  Node: [Mesh Island] | LABEL: "COL_ISLANDS" (Type: GeometryNodeInputMeshIsland)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Island Index" -> LINKED
+           ---> (Wire #119) To: [Random Value.006] (Label: "RND_CREACH") [Slot 7: "ID"]
+           ---> (Wire #198) To: [Reroute.005] (Label: "NONE") [Slot 0: "Input"]
+        1. "Island Count" -> FREE
+
+  Node: [Random Value.003] | LABEL: "RND_FX" (Type: FunctionNodeRandomValue)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        2. "Min" -> FREE [Value: -1.0]
+        3. "Max" -> FREE [Value: 1.0]
+        7. "ID" -> LINKED (Slot 7)
+           <--- (Wire #140) From: [Math.031] (Label: "CRUMB_ID ") [Socket: "Value"]
+        8. "Seed" -> FREE [Value: 11]
+    Outputs:
+        1. "Value" -> LINKED
+           ---> (Wire #129) To: [Combine XYZ.006] (Label: "COL_DIR") [Slot 0: "X"]
+
+  Node: [Random Value.004] | LABEL: "RND_FY" (Type: FunctionNodeRandomValue)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        2. "Min" -> FREE [Value: -1.0]
+        3. "Max" -> FREE [Value: 1.0]
+        7. "ID" -> LINKED (Slot 7)
+           <--- (Wire #141) From: [Math.031] (Label: "CRUMB_ID ") [Socket: "Value"]
+        8. "Seed" -> FREE [Value: 17]
+    Outputs:
+        1. "Value" -> LINKED
+           ---> (Wire #130) To: [Combine XYZ.006] (Label: "COL_DIR") [Slot 1: "Y"]
+
+  Node: [Set Position.003] | LABEL: "FLY_PLATE" (Type: GeometryNodeSetPosition)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #105) From: [Set Position.004] (Label: "SHRINK_CRUMB") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Position" -> FREE [Value: X=0.0, Y=0.0, Z=0.0]
+        3. "Offset" -> LINKED (Slot 3)
+           <--- (Wire #165) From: [Vector Rotate] (Label: "CRUMB_OFF") [Socket: "Vector"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #85) To: [Join Geometry] (Label: "MERGE") [Slot 0: "Geometry"]
+
+  Node: [Boolean Math.002] | LABEL: "COL_FLY_ON" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #247) From: [Reroute.024] (Label: "NONE") [Socket: "Output"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #218) From: [Reroute.026] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #95) To: [Switch.004] (Label: "COL_LIFE_GATE ") [Slot 0: "Switch"]
+           ---> (Wire #111) To: [Switch.005] (Label: "COL_ELAPSED_GATE ") [Slot 0: "Switch"]
+           ---> (Wire #199) To: [Reroute.056] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Store Named Attribute.001] | LABEL: "STORE_COUNT" (Type: GeometryNodeStoreNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #137) From: [Store Named Attribute] (Label: "STORE_SEED") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Name" -> FREE [Value: 'col_count']
+        3. "Value" -> LINKED (Slot 3)
+           <--- (Wire #269) From: [Reroute.052] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #97) To: [Store Named Attribute.002] (Label: "STORE_LIFE") [Slot 0: "Geometry"]
+
+  Node: [Named Attribute.017] | LABEL: "READ_COUNT" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'col_count']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #90) To: [Compare.003] (Label: "KEEP_CRUMB") [Slot 1: "B"]
+        1. "Exists" -> FREE
+
+  Node: [Random Value.005] | LABEL: "RND_KEEP" (Type: FunctionNodeRandomValue)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        2. "Min" -> FREE [Value: 0.0]
+        3. "Max" -> FREE [Value: 1.0]
+        7. "ID" -> LINKED (Slot 7)
+           <--- (Wire #142) From: [Math.031] (Label: "CRUMB_ID ") [Socket: "Value"]
+        8. "Seed" -> FREE [Value: 41]
+    Outputs:
+        1. "Value" -> LINKED
+           ---> (Wire #89) To: [Compare.003] (Label: "KEEP_CRUMB") [Slot 0: "A"]
+
+  Node: [Compare.003] | LABEL: "KEEP_CRUMB" (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: LESS_THAN
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #89) From: [Random Value.005] (Label: "RND_KEEP") [Socket: "Value"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #90) From: [Named Attribute.017] (Label: "READ_COUNT") [Socket: "Attribute"]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #91) To: [Boolean Math.003] (Label: "DROP_CRUMB ") [Slot 0: "Boolean"]
+
+  Node: [Boolean Math.003] | LABEL: "DROP_CRUMB " (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: NOT
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #91) From: [Compare.003] (Label: "KEEP_CRUMB") [Socket: "Result"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #92) To: [Boolean Math.004] (Label: "DROP_NOW") [Slot 0: "Boolean"]
+
+  Node: [Boolean Math.004] | LABEL: "DROP_NOW" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #92) From: [Boolean Math.003] (Label: "DROP_CRUMB ") [Socket: "Boolean"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #225) From: [Reroute.056] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #94) To: [Delete Geometry.002] (Label: "THIN_CRUMBS") [Slot 1: "Selection"]
+
+  Node: [Delete Geometry.002] | LABEL: "THIN_CRUMBS" (Type: GeometryNodeDeleteGeometry)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DOMAIN: POINT, MODE: ALL
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #93) From: [Realize Instances] (Label: "REALIZE_COL") [Socket: "Geometry"]
+        1. "Selection" -> LINKED (Slot 1)
+           <--- (Wire #94) From: [Boolean Math.004] (Label: "DROP_NOW") [Socket: "Boolean"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #103) To: [Set Position.004] (Label: "SHRINK_CRUMB") [Slot 0: "Geometry"]
+
+  Node: [Switch.004] | LABEL: "COL_LIFE_GATE " (Type: GeometryNodeSwitch)
+    DNA LOGIC: Not documented.
+    PARAMETERS: INPUT_TYPE: FLOAT
+    Inputs:
+        0. "Switch" -> LINKED (Slot 0)
+           <--- (Wire #95) From: [Boolean Math.002] (Label: "COL_FLY_ON") [Socket: "Boolean"]
+        1. "False" -> FREE [Value: 1.0]
+        2. "True" -> LINKED (Slot 2)
+           <--- (Wire #96) From: [Math.035] (Label: "SHARD_LIFE") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #175) To: [Store Named Attribute.002] (Label: "STORE_LIFE") [Slot 3: "Value"]
+
+  Node: [Store Named Attribute.002] | LABEL: "STORE_LIFE" (Type: GeometryNodeStoreNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #97) From: [Store Named Attribute.001] (Label: "STORE_COUNT") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Name" -> FREE [Value: 'col_life']
+        3. "Value" -> LINKED (Slot 3)
+           <--- (Wire #175) From: [Switch.004] (Label: "COL_LIFE_GATE ") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #98) To: [Store Named Attribute.003] (Label: "STORE_ANCHOR") [Slot 0: "Geometry"]
+
+  Node: [Store Named Attribute.003] | LABEL: "STORE_ANCHOR" (Type: GeometryNodeStoreNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR, DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #98) From: [Store Named Attribute.002] (Label: "STORE_LIFE") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Name" -> FREE [Value: 'col_anchor']
+        3. "Value" -> LINKED (Slot 3)
+           <--- (Wire #106) From: [Position] (Label: "NONE") [Socket: "Position"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #115) To: [Store Named Attribute.004] (Label: "STORE_COL_SPEED") [Slot 0: "Geometry"]
+
+  Node: [Named Attribute.018] | LABEL: "READ_LIFE " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'col_life']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #100) To: [Vector Math.001] (Label: "DELTA_SCL ") [Slot 3: "Scale"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.019] | LABEL: "READ_ANCHOR " (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR
+    Inputs:
+        0. "Name" -> FREE [Value: 'col_anchor']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #101) To: [Vector Math] (Label: "DELTA ") [Slot 1: "Vector"]
+           ---> (Wire #201) To: [Reroute.013] (Label: "NONE") [Slot 0: "Input"]
+        1. "Exists" -> FREE
+
+  Node: [Position] | LABEL: "NONE" (Type: GeometryNodeInputPosition)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Position" -> LINKED
+           ---> (Wire #106) To: [Store Named Attribute.003] (Label: "STORE_ANCHOR") [Slot 3: "Value"]
+           ---> (Wire #172) To: [Vector Math] (Label: "DELTA ") [Slot 0: "Vector"]
+
+  Node: [Vector Math] | LABEL: "DELTA " (Type: ShaderNodeVectorMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #172) From: [Position] (Label: "NONE") [Socket: "Position"]
+        1. "Vector" -> LINKED (Slot 1)
+           <--- (Wire #101) From: [Named Attribute.019] (Label: "READ_ANCHOR ") [Socket: "Attribute"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #99) To: [Vector Math.001] (Label: "DELTA_SCL ") [Slot 0: "Vector"]
+
+  Node: [Vector Math.001] | LABEL: "DELTA_SCL " (Type: ShaderNodeVectorMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SCALE
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #99) From: [Vector Math] (Label: "DELTA ") [Socket: "Vector"]
+        3. "Scale" -> LINKED (Slot 3)
+           <--- (Wire #100) From: [Named Attribute.018] (Label: "READ_LIFE ") [Socket: "Attribute"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #102) To: [Vector Math.002] (Label: "NEW_POS ") [Slot 1: "Vector"]
+
+  Node: [Vector Math.002] | LABEL: "NEW_POS " (Type: ShaderNodeVectorMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #277) From: [Reroute.013] (Label: "NONE") [Socket: "Output"]
+        1. "Vector" -> LINKED (Slot 1)
+           <--- (Wire #102) From: [Vector Math.001] (Label: "DELTA_SCL ") [Socket: "Vector"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #104) To: [Set Position.004] (Label: "SHRINK_CRUMB") [Slot 2: "Position"]
+
+  Node: [Set Position.004] | LABEL: "SHRINK_CRUMB" (Type: GeometryNodeSetPosition)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #103) From: [Delete Geometry.002] (Label: "THIN_CRUMBS") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Position" -> LINKED (Slot 2)
+           <--- (Wire #104) From: [Vector Math.002] (Label: "NEW_POS ") [Socket: "Vector"]
+        3. "Offset" -> FREE [Value: X=0.0, Y=0.0, Z=0.0]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #105) To: [Set Position.003] (Label: "FLY_PLATE") [Slot 0: "Geometry"]
+
+  Node: [Switch.005] | LABEL: "COL_ELAPSED_GATE " (Type: GeometryNodeSwitch)
+    DNA LOGIC: Not documented.
+    PARAMETERS: INPUT_TYPE: FLOAT
+    Inputs:
+        0. "Switch" -> LINKED (Slot 0)
+           <--- (Wire #111) From: [Boolean Math.002] (Label: "COL_FLY_ON") [Socket: "Boolean"]
+        1. "False" -> FREE [Value: 0.0]
+        2. "True" -> LINKED (Slot 2)
+           <--- (Wire #112) From: [Math.049] (Label: "SHARD_ELAPSED_POS") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #174) To: [Store Named Attribute.006] (Label: "STORE_COL_ELAPSED") [Slot 3: "Value"]
+
+  Node: [Store Named Attribute.004] | LABEL: "STORE_COL_SPEED" (Type: GeometryNodeStoreNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #115) From: [Store Named Attribute.003] (Label: "STORE_ANCHOR") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Name" -> FREE [Value: 'col_speed']
+        3. "Value" -> LINKED (Slot 3)
+           <--- (Wire #271) From: [Reroute.054] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #116) To: [Store Named Attribute.005] (Label: "STORE_COL_REACH") [Slot 0: "Geometry"]
+
+  Node: [Store Named Attribute.005] | LABEL: "STORE_COL_REACH" (Type: GeometryNodeStoreNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #116) From: [Store Named Attribute.004] (Label: "STORE_COL_SPEED") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Name" -> FREE [Value: 'col_reach']
+        3. "Value" -> LINKED (Slot 3)
+           <--- (Wire #272) From: [Reroute.055] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #117) To: [Store Named Attribute.006] (Label: "STORE_COL_ELAPSED") [Slot 0: "Geometry"]
+
+  Node: [Store Named Attribute.006] | LABEL: "STORE_COL_ELAPSED" (Type: GeometryNodeStoreNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #117) From: [Store Named Attribute.005] (Label: "STORE_COL_REACH") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Name" -> FREE [Value: 'col_elapsed']
+        3. "Value" -> LINKED (Slot 3)
+           <--- (Wire #174) From: [Switch.005] (Label: "COL_ELAPSED_GATE ") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #118) To: [Instance on Points] (Label: "SPAWN_COL") [Slot 0: "Points"]
+
+  Node: [Named Attribute.022] | LABEL: "READ_CSPEED" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'col_speed']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #123) To: [Math.024] (Label: "COL_STEP") [Slot 0: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.023] | LABEL: "READ_CREACH" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'col_reach']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #120) To: [Math.022] (Label: "COL_REACH_I") [Slot 0: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Named Attribute.024] | LABEL: "READ_CELAPSED" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'col_elapsed']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #124) To: [Math.024] (Label: "COL_STEP") [Slot 1: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Random Value.006] | LABEL: "RND_CREACH" (Type: FunctionNodeRandomValue)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        2. "Min" -> FREE [Value: 0.0]
+        3. "Max" -> FREE [Value: 1.0]
+        7. "ID" -> LINKED (Slot 7)
+           <--- (Wire #119) From: [Mesh Island] (Label: "COL_ISLANDS") [Socket: "Island Index"]
+        8. "Seed" -> FREE [Value: 29]
+    Outputs:
+        1. "Value" -> LINKED
+           ---> (Wire #121) To: [Math.022] (Label: "COL_REACH_I") [Slot 1: "Value"]
+
+  Node: [Math.022] | LABEL: "COL_REACH_I" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #120) From: [Named Attribute.023] (Label: "READ_CREACH") [Socket: "Attribute"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #121) From: [Random Value.006] (Label: "RND_CREACH") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #122) To: [Math.023] (Label: "COL_REACH_SAFE") [Slot 0: "Value"]
+
+  Node: [Math.023] | LABEL: "COL_REACH_SAFE" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MAXIMUM, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #122) From: [Math.022] (Label: "COL_REACH_I") [Socket: "Value"]
+        1. "Value" -> FREE [Value: 0.0010000000474974513]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #126) To: [Math.025] (Label: "COL_RNORM") [Slot 1: "Value"]
+
+  Node: [Math.024] | LABEL: "COL_STEP" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #123) From: [Named Attribute.022] (Label: "READ_CSPEED") [Socket: "Attribute"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #124) From: [Named Attribute.024] (Label: "READ_CELAPSED") [Socket: "Attribute"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #125) To: [Math.025] (Label: "COL_RNORM") [Slot 0: "Value"]
+           ---> (Wire #204) To: [Reroute.015] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Math.025] | LABEL: "COL_RNORM" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #125) From: [Math.024] (Label: "COL_STEP") [Socket: "Value"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #126) From: [Math.023] (Label: "COL_REACH_SAFE") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #127) To: [Math.026] (Label: "COL_DENOM") [Slot 0: "Value"]
+
+  Node: [Math.026] | LABEL: "COL_DENOM" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #127) From: [Math.025] (Label: "COL_RNORM") [Socket: "Value"]
+        1. "Value" -> FREE [Value: 1.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #128) To: [Math.029] (Label: "COL_DIST") [Slot 1: "Value"]
+
+  Node: [Math.029] | LABEL: "COL_DIST" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: DIVIDE, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #275) From: [Reroute.016] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #128) From: [Math.026] (Label: "COL_DENOM") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #163) To: [Vector Math.007] (Label: "LOCAL_OFF") [Slot 3: "Scale"]
+
+  Node: [Combine XYZ.006] | LABEL: "COL_DIR" (Type: ShaderNodeCombineXYZ)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "X" -> LINKED (Slot 0)
+           <--- (Wire #129) From: [Random Value.003] (Label: "RND_FX") [Socket: "Value"]
+        1. "Y" -> LINKED (Slot 1)
+           <--- (Wire #130) From: [Random Value.004] (Label: "RND_FY") [Socket: "Value"]
+        2. "Z" -> FREE [Value: 0.0]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #131) To: [Vector Math.003] (Label: "COL_DIR_N") [Slot 0: "Vector"]
+
+  Node: [Vector Math.003] | LABEL: "COL_DIR_N" (Type: ShaderNodeVectorMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: NORMALIZE
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #131) From: [Combine XYZ.006] (Label: "COL_DIR") [Socket: "Vector"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #205) To: [Reroute.020] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Store Named Attribute] | LABEL: "STORE_SEED" (Type: GeometryNodeStoreNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR, DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #161) From: [Store Named Attribute.007] (Label: "STORE_NML") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Name" -> FREE [Value: 'col_seed']
+        3. "Value" -> LINKED (Slot 3)
+           <--- (Wire #268) From: [Reroute.050] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #137) To: [Store Named Attribute.001] (Label: "STORE_COUNT") [Slot 0: "Geometry"]
+
+  Node: [Named Attribute.026] | LABEL: "READ_SEED" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT
+    Inputs:
+        0. "Name" -> FREE [Value: 'col_seed']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #138) To: [Math.030] (Label: "SEED_BASE ") [Slot 0: "Value"]
+        1. "Exists" -> FREE
+
+  Node: [Math.030] | LABEL: "SEED_BASE " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #138) From: [Named Attribute.026] (Label: "READ_SEED") [Socket: "Attribute"]
+        1. "Value" -> FREE [Value: 128.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #139) To: [Math.031] (Label: "CRUMB_ID ") [Slot 0: "Value"]
+
+  Node: [Math.031] | LABEL: "CRUMB_ID " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #139) From: [Math.030] (Label: "SEED_BASE ") [Socket: "Value"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #270) From: [Reroute.006] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #140) To: [Random Value.003] (Label: "RND_FX") [Slot 7: "ID"]
+           ---> (Wire #141) To: [Random Value.004] (Label: "RND_FY") [Slot 7: "ID"]
+           ---> (Wire #142) To: [Random Value.005] (Label: "RND_KEEP") [Slot 7: "ID"]
+
+  Node: [Duplicate Elements] | LABEL: "DUP_COLS" (Type: GeometryNodeDuplicateElements)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #157) From: [Delete Geometry] (Label: "DROP_COL") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Amount" -> LINKED (Slot 2)
+           <--- (Wire #252) From: [Reroute.040] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #176) To: [Set Position] (Label: "PLACE_COL") [Slot 0: "Geometry"]
+        1. "Duplicate Index" -> LINKED
+           ---> (Wire #159) To: [Math.013] (Label: "FACE_ID ") [Slot 1: "Value"]
+
+  Node: [Math.012] | LABEL: "FACE_ID_BASE" (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: MULTIPLY, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #250) From: [Reroute.038] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> FREE [Value: 64.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #158) To: [Math.013] (Label: "FACE_ID ") [Slot 0: "Value"]
+
+  Node: [Math.013] | LABEL: "FACE_ID " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #158) From: [Math.012] (Label: "FACE_ID_BASE") [Socket: "Value"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #159) From: [Duplicate Elements] (Label: "DUP_COLS") [Socket: "Duplicate Index"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #167) To: [Random Value.001] (Label: "RND_CREACH_COL") [Slot 7: "ID"]
+           ---> (Wire #210) To: [Reroute.042] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Store Named Attribute.007] | LABEL: "STORE_NML" (Type: GeometryNodeStoreNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR, DOMAIN: POINT
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #160) From: [Set Position] (Label: "PLACE_COL") [Socket: "Geometry"]
+        1. "Selection" -> FREE [Value: True]
+        2. "Name" -> FREE [Value: 'col_nml']
+        3. "Value" -> LINKED (Slot 3)
+           <--- (Wire #267) From: [Reroute.036] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #161) To: [Store Named Attribute] (Label: "STORE_SEED") [Slot 0: "Geometry"]
+
+  Node: [Named Attribute.028] | LABEL: "READ_NML" (Type: GeometryNodeInputNamedAttribute)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR
+    Inputs:
+        0. "Name" -> FREE [Value: 'col_nml']
+    Outputs:
+        0. "Attribute" -> LINKED
+           ---> (Wire #162) To: [Align Euler to Vector.001] (Label: "CRUMB_ROT") [Slot 2: "Vector"]
+        1. "Exists" -> FREE
+
+  Node: [Align Euler to Vector.001] | LABEL: "CRUMB_ROT" (Type: FunctionNodeAlignEulerToVector)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Rotation" -> FREE [Value: X=0.0, Y=0.0, Z=0.0]
+        1. "Factor" -> FREE [Value: 1.0]
+        2. "Vector" -> LINKED (Slot 2)
+           <--- (Wire #162) From: [Named Attribute.028] (Label: "READ_NML") [Socket: "Attribute"]
+    Outputs:
+        0. "Rotation" -> LINKED
+           ---> (Wire #166) To: [Vector Rotate] (Label: "CRUMB_OFF") [Slot 4: "Rotation"]
+
+  Node: [Vector Math.007] | LABEL: "LOCAL_OFF" (Type: ShaderNodeVectorMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SCALE
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #276) From: [Reroute.020] (Label: "NONE") [Socket: "Output"]
+        3. "Scale" -> LINKED (Slot 3)
+           <--- (Wire #163) From: [Math.029] (Label: "COL_DIST") [Socket: "Value"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #164) To: [Vector Rotate] (Label: "CRUMB_OFF") [Slot 0: "Vector"]
+
+  Node: [Vector Rotate] | LABEL: "CRUMB_OFF" (Type: ShaderNodeVectorRotate)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #164) From: [Vector Math.007] (Label: "LOCAL_OFF") [Socket: "Vector"]
+        1. "Center" -> FREE [Value: X=0.0, Y=0.0, Z=0.0]
+        4. "Rotation" -> LINKED (Slot 4)
+           <--- (Wire #166) From: [Align Euler to Vector.001] (Label: "CRUMB_ROT") [Socket: "Rotation"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #165) To: [Set Position.003] (Label: "FLY_PLATE") [Slot 3: "Offset"]
+
+  Node: [Reroute.005] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #198) From: [Mesh Island] (Label: "COL_ISLANDS") [Socket: "Island Index"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #224) To: [Reroute.006] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.006] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #224) From: [Reroute.005] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #270) To: [Math.031] (Label: "CRUMB_ID ") [Slot 1: "Value"]
+
+  Node: [Reroute.013] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #201) From: [Named Attribute.019] (Label: "READ_ANCHOR ") [Socket: "Attribute"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #277) To: [Vector Math.002] (Label: "NEW_POS ") [Slot 0: "Vector"]
+
+  Node: [Reroute.015] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #204) From: [Math.024] (Label: "COL_STEP") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #226) To: [Reroute.016] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.016] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #226) From: [Reroute.015] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #275) To: [Math.029] (Label: "COL_DIST") [Slot 0: "Value"]
+
+  Node: [Reroute.020] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #205) From: [Vector Math.003] (Label: "COL_DIR_N") [Socket: "Vector"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #276) To: [Vector Math.007] (Label: "LOCAL_OFF") [Slot 0: "Vector"]
+
+  Node: [Reroute.053] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #186) From: [Combine XYZ.001] (Label: "SCALE_VEC") [Socket: "Vector"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #274) To: [Instance on Points] (Label: "SPAWN_COL") [Slot 6: "Scale"]
+
+  Node: [Reroute.056] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #199) From: [Boolean Math.002] (Label: "COL_FLY_ON") [Socket: "Boolean"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #225) To: [Boolean Math.004] (Label: "DROP_NOW") [Slot 1: "Boolean"]
+
+MODULE FRAME: ======= OUTPUT =======
+
+  Node: [Join Geometry] | LABEL: "MERGE" (Type: GeometryNodeJoinGeometry)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #85) From: [Set Position.003] (Label: "FLY_PLATE") [Socket: "Geometry"]
+           <--- (Wire #264) From: [Reroute.039] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Geometry" -> LINKED
+           ---> (Wire #21) To: [Group Output] (Label: "NONE") [Slot 0: "Geometry"]
+
+  Node: [Group Output] | LABEL: "NONE" (Type: NodeGroupOutput)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #21) From: [Join Geometry] (Label: "MERGE") [Socket: "Geometry"]
+        1. "" -> FREE
+
+MODULE FRAME: ======= VISIBILITY =======
+
+  Node: [Boolean Math.014] | LABEL: "NOT_COL" (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: NOT
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #54) From: [Boolean Math.019] (Label: "GATE_COL ") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #45) To: [Delete Geometry] (Label: "DROP_COL") [Slot 1: "Selection"]
+
+  Node: [Boolean Math.019] | LABEL: "GATE_COL " (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: AND
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #243) From: [Reroute.021] (Label: "NONE") [Socket: "Output"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #67) From: [Boolean Math.021] (Label: "COL_VISIBLE ") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #54) To: [Boolean Math.014] (Label: "NOT_COL") [Slot 0: "Boolean"]
+
+  Node: [Compare.012] | LABEL: "COLLAPSE_DONE " (Type: FunctionNodeCompare)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT, MODE: ELEMENT, OPERATION: GREATER_EQUAL
+    Inputs:
+        0. "A" -> LINKED (Slot 0)
+           <--- (Wire #241) From: [Reroute.019] (Label: "NONE") [Socket: "Output"]
+        1. "B" -> LINKED (Slot 1)
+           <--- (Wire #242) From: [Reroute.022] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Result" -> LINKED
+           ---> (Wire #195) To: [Reroute.023] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Boolean Math.021] | LABEL: "COL_VISIBLE " (Type: FunctionNodeBooleanMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: OR
+    Inputs:
+        0. "Boolean" -> LINKED (Slot 0)
+           <--- (Wire #239) From: [Reroute.014] (Label: "NONE") [Socket: "Output"]
+        1. "Boolean" -> LINKED (Slot 1)
+           <--- (Wire #82) From: [Boolean Math.005] (Label: "ECHO_ALIVE") [Socket: "Boolean"]
+    Outputs:
+        0. "Boolean" -> LINKED
+           ---> (Wire #67) To: [Boolean Math.019] (Label: "GATE_COL ") [Slot 1: "Boolean"]
+
+MODULE FRAME: ======= FRAME.007 =======
+
+  Node: [Domain Size] | LABEL: "MESH_SIZE" (Type: GeometryNodeAttributeDomainSize)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #257) From: [Reroute.047] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Point Count" -> FREE
+        1. "Edge Count" -> FREE
+        2. "Face Count" -> LINKED
+           ---> (Wire #143) To: [Math.005] (Label: "FACE_MAX ") [Slot 0: "Value"]
+        3. "Face Corner Count" -> FREE
+
+  Node: [Math.005] | LABEL: "FACE_MAX " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SUBTRACT, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #143) From: [Domain Size] (Label: "MESH_SIZE") [Socket: "Face Count"]
+        1. "Value" -> FREE [Value: 1.0]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #144) To: [Random Value] (Label: "RND_FACE") [Slot 5: "Max"]
+
+  Node: [Random Value] | LABEL: "RND_FACE" (Type: FunctionNodeRandomValue)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: INT
+    Inputs:
+        4. "Min" -> FREE [Value: 0]
+        5. "Max" -> LINKED (Slot 5)
+           <--- (Wire #144) From: [Math.005] (Label: "FACE_MAX ") [Socket: "Value"]
+        7. "ID" -> LINKED (Slot 7)
+           <--- (Wire #261) From: [Reroute.043] (Label: "NONE") [Socket: "Output"]
+        8. "Seed" -> FREE [Value: 7]
+    Outputs:
+        2. "Value" -> LINKED
+           ---> (Wire #145) To: [Sample Index.007] (Label: "SAMPLE_NML") [Slot 2: "Index"]
+           ---> (Wire #148) To: [Sample Index.009] (Label: "SAMPLE_HIT") [Slot 2: "Index"]
+
+  Node: [Sample Index.007] | LABEL: "SAMPLE_NML" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR, DOMAIN: FACE, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #263) From: [Reroute.039] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #147) From: [Normal] (Label: "NONE") [Socket: "Normal"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #145) From: [Random Value] (Label: "RND_FACE") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #149) To: [Vector Math.005] (Label: "COL_OFF") [Slot 0: "Vector"]
+           ---> (Wire #207) To: [Reroute.025] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Sample Index.009] | LABEL: "SAMPLE_HIT" (Type: GeometryNodeSampleIndex)
+    DNA LOGIC: Not documented.
+    PARAMETERS: DATA_TYPE: FLOAT_VECTOR, DOMAIN: FACE, CLAMP: False
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #262) From: [Reroute.039] (Label: "NONE") [Socket: "Output"]
+        1. "Value" -> LINKED (Slot 1)
+           <--- (Wire #146) From: [Position.001] (Label: "NONE") [Socket: "Position"]
+        2. "Index" -> LINKED (Slot 2)
+           <--- (Wire #148) From: [Random Value] (Label: "RND_FACE") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #173) To: [Vector Math.006] (Label: "COL_POS_N") [Slot 0: "Vector"]
+
+  Node: [Position.001] | LABEL: "NONE" (Type: GeometryNodeInputPosition)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Position" -> LINKED
+           ---> (Wire #146) To: [Sample Index.009] (Label: "SAMPLE_HIT") [Slot 1: "Value"]
+
+  Node: [Normal] | LABEL: "NONE" (Type: GeometryNodeInputNormal)
+    DNA LOGIC: Not documented.
+    Outputs:
+        0. "Normal" -> LINKED
+           ---> (Wire #147) To: [Sample Index.007] (Label: "SAMPLE_NML") [Slot 1: "Value"]
+        1. "True Normal" -> FREE
+
+  Node: [Vector Math.005] | LABEL: "COL_OFF" (Type: ShaderNodeVectorMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: SCALE
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #149) From: [Sample Index.007] (Label: "SAMPLE_NML") [Socket: "Value"]
+        3. "Scale" -> LINKED (Slot 3)
+           <--- (Wire #150) From: [Math.008] (Label: "FLY_Z ") [Socket: "Value"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #151) To: [Vector Math.006] (Label: "COL_POS_N") [Slot 1: "Vector"]
+
+  Node: [Vector Math.006] | LABEL: "COL_POS_N" (Type: ShaderNodeVectorMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ADD
+    Inputs:
+        0. "Vector" -> LINKED (Slot 0)
+           <--- (Wire #173) From: [Sample Index.009] (Label: "SAMPLE_HIT") [Socket: "Value"]
+        1. "Vector" -> LINKED (Slot 1)
+           <--- (Wire #151) From: [Vector Math.005] (Label: "COL_OFF") [Socket: "Vector"]
+    Outputs:
+        0. "Vector" -> LINKED
+           ---> (Wire #152) To: [Set Position] (Label: "PLACE_COL") [Slot 2: "Position"]
+
+  Node: [Align Euler to Vector] | LABEL: "COL_ROT" (Type: FunctionNodeAlignEulerToVector)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Rotation" -> FREE [Value: X=0.0, Y=0.0, Z=0.0]
+        1. "Factor" -> FREE [Value: 1.0]
+        2. "Vector" -> LINKED (Slot 2)
+           <--- (Wire #266) From: [Reroute.025] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Rotation" -> LINKED
+           ---> (Wire #208) To: [Reroute.051] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.025] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #207) From: [Sample Index.007] (Label: "SAMPLE_NML") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #265) To: [Reroute.035] (Label: "NONE") [Slot 0: "Input"]
+           ---> (Wire #266) To: [Align Euler to Vector] (Label: "COL_ROT") [Slot 2: "Vector"]
+
+MODULE FRAME: ======= FRAME.008 =======
+
+  Node: [Math.011] | LABEL: "COLS_AMT " (Type: ShaderNodeMath)
+    DNA LOGIC: Not documented.
+    PARAMETERS: OPERATION: ROUND, USE_CLAMP: False
+    Inputs:
+        0. "Value" -> LINKED (Slot 0)
+           <--- (Wire #156) From: [Sample Index.015] (Label: "READ_COLS") [Socket: "Value"]
+    Outputs:
+        0. "Value" -> LINKED
+           ---> (Wire #209) To: [Reroute.040] (Label: "NONE") [Slot 0: "Input"]
+
+UNASSIGNED ORPHAN NODES: ==============================
+
+  Node: [Reroute] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #178) From: [Object Info] (Label: "BUFFER") [Socket: "Geometry"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #214) To: [Reroute.001] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.001] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #214) From: [Reroute] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #232) To: [Reroute.030] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.002] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #180) From: [Named Attribute.001] (Label: "ATTR_END") [Socket: "Attribute"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #211) To: [Reroute.003] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.003] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #211) From: [Reroute.002] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #230) To: [Compare.004] (Label: "IS_HELD") [Slot 0: "A"]
+           ---> (Wire #231) To: [Reroute.010] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.010] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #231) From: [Reroute.003] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #234) To: [Compare.007] (Label: "WAS_RELEASED") [Slot 0: "A"]
+
+  Node: [Reroute.011] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #196) From: [Sample Index.008] (Label: "READ_COLLAPSE") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #237) To: [Math.044] (Label: "SHARD_ELAPSED") [Slot 1: "Value"]
+           ---> (Wire #238) To: [Reroute.022] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.012] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #189) From: [Switch] (Label: "FADE_GATE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #219) To: [Math.018] (Label: "FLAT") [Slot 1: "Value"]
+
+  Node: [Reroute.014] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #194) From: [Boolean Math.017] (Label: "IN_BODY") [Socket: "Boolean"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #239) To: [Boolean Math.021] (Label: "COL_VISIBLE ") [Slot 0: "Boolean"]
+           ---> (Wire #240) To: [Reroute.017] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.017] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #240) From: [Reroute.014] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #244) To: [Switch] (Label: "FADE_GATE") [Slot 0: "Switch"]
+
+  Node: [Reroute.018] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #235) From: [Reroute.009] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #228) To: [Reroute.019] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.019] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #228) From: [Reroute.018] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #241) To: [Compare.012] (Label: "COLLAPSE_DONE ") [Slot 0: "A"]
+
+  Node: [Reroute.021] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #182) From: [Boolean Math.001] (Label: "AND_2") [Socket: "Boolean"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #243) To: [Boolean Math.019] (Label: "GATE_COL ") [Slot 0: "Boolean"]
+
+  Node: [Reroute.022] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #238) From: [Reroute.011] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #242) To: [Compare.012] (Label: "COLLAPSE_DONE ") [Slot 1: "B"]
+
+  Node: [Reroute.023] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #195) From: [Compare.012] (Label: "COLLAPSE_DONE ") [Socket: "Result"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #222) To: [Reroute.024] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.024] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #222) From: [Reroute.023] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #247) To: [Boolean Math.002] (Label: "COL_FLY_ON") [Slot 0: "Boolean"]
+
+  Node: [Reroute.026] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #188) From: [Compare.007] (Label: "WAS_RELEASED") [Socket: "Result"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #218) To: [Boolean Math.002] (Label: "COL_FLY_ON") [Slot 1: "Boolean"]
+
+  Node: [Reroute.027] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #197) From: [Math.004] (Label: "SHARD_T_NORM") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #223) To: [Reroute.028] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.028] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #223) From: [Reroute.027] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #248) To: [Math.035] (Label: "SHARD_LIFE") [Slot 1: "Value"]
+
+  Node: [Reroute.029] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #206) From: [Sample Index.014] (Label: "READ_PLATE") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #245) To: [Mix] (Label: "Z_FAC") [Slot 2: "A"]
+
+  Node: [Reroute.030] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #232) From: [Reroute.001] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #215) To: [Reroute.031] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.031] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #215) From: [Reroute.030] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #246) To: [Delete Geometry] (Label: "DROP_COL") [Slot 0: "Geometry"]
+
+  Node: [Reroute.032] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #190) From: [Math.010] (Label: "Z_SCALE") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #220) To: [Reroute.033] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.033] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #220) From: [Reroute.032] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #255) To: [Combine XYZ.001] (Label: "SCALE_VEC") [Slot 2: "Z"]
+
+  Node: [Reroute.034] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #191) From: [Sample Index.004] (Label: "READ_LENGTH") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #249) To: [Math.010] (Label: "Z_SCALE") [Slot 1: "Value"]
+
+  Node: [Reroute.035] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #265) From: [Reroute.025] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #229) To: [Reroute.036] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.036] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #229) From: [Reroute.035] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #267) To: [Store Named Attribute.007] (Label: "STORE_NML") [Slot 3: "Value"]
+
+  Node: [Reroute.037] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #179) From: [Named Attribute] (Label: "ATTR_START") [Socket: "Attribute"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #216) To: [Reroute.038] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.038] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #216) From: [Reroute.037] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #250) To: [Math.012] (Label: "FACE_ID_BASE") [Slot 0: "Value"]
+           ---> (Wire #251) To: [Reroute.050] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.039] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #258) From: [Reroute.047] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #262) To: [Sample Index.009] (Label: "SAMPLE_HIT") [Slot 0: "Geometry"]
+           ---> (Wire #263) To: [Sample Index.007] (Label: "SAMPLE_NML") [Slot 0: "Geometry"]
+           ---> (Wire #264) To: [Join Geometry] (Label: "MERGE") [Slot 0: "Geometry"]
+
+  Node: [Reroute.040] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #209) From: [Math.011] (Label: "COLS_AMT ") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #252) To: [Duplicate Elements] (Label: "DUP_COLS") [Slot 2: "Amount"]
+
+  Node: [Reroute.041] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #193) From: [Sample Index.006] (Label: "READ_BURST ") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #253) To: [Math.027] (Label: "BURST_FACTOR") [Slot 1: "Value"]
+
+  Node: [Reroute.042] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #210) From: [Math.013] (Label: "FACE_ID ") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #227) To: [Reroute.043] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.043] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #227) From: [Reroute.042] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #261) To: [Random Value] (Label: "RND_FACE") [Slot 7: "ID"]
+
+  Node: [Reroute.044] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #183) From: [Sample Index.001] (Label: "READ_SIZE") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #254) To: [Math.020] (Label: "XY_BURST") [Slot 0: "Value"]
+
+  Node: [Reroute.045] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #185) From: [Sample Index.003] (Label: "READ_REACH") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #256) To: [Math.015] (Label: "REACH_I") [Slot 0: "Value"]
+
+  Node: [Reroute.046] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #177) From: [Group Input] (Label: "NONE") [Socket: "Geometry"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #213) To: [Reroute.047] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.047] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #213) From: [Reroute.046] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #257) To: [Domain Size] (Label: "MESH_SIZE") [Slot 0: "Geometry"]
+           ---> (Wire #258) To: [Reroute.039] (Label: "NONE") [Slot 0: "Input"]
+
+  Node: [Reroute.050] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #251) From: [Reroute.038] (Label: "NONE") [Socket: "Output"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #268) To: [Store Named Attribute] (Label: "STORE_SEED") [Slot 3: "Value"]
+
+  Node: [Reroute.051] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #208) From: [Align Euler to Vector] (Label: "COL_ROT") [Socket: "Rotation"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #273) To: [Instance on Points] (Label: "SPAWN_COL") [Slot 5: "Rotation"]
+
+  Node: [Reroute.052] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #200) From: [Sample Index.011] (Label: "READ_COL_COUNT") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #269) To: [Store Named Attribute.001] (Label: "STORE_COUNT") [Slot 3: "Value"]
+
+  Node: [Reroute.054] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #202) From: [Sample Index.012] (Label: "READ_COL_SPEED") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #271) To: [Store Named Attribute.004] (Label: "STORE_COL_SPEED") [Slot 3: "Value"]
+
+  Node: [Reroute.055] | LABEL: "NONE" (Type: NodeReroute)
+    DNA LOGIC: Not documented.
+    Inputs:
+        0. "Input" -> LINKED (Slot 0)
+           <--- (Wire #203) From: [Sample Index.013] (Label: "READ_COL_REACH") [Socket: "Value"]
+    Outputs:
+        0. "Output" -> LINKED
+           ---> (Wire #272) To: [Store Named Attribute.005] (Label: "STORE_COL_REACH") [Slot 3: "Value"]
+
+================================================================================

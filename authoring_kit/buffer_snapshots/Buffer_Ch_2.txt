@@ -1,0 +1,9 @@
+================== OCTAVIA BUFFER SNAPSHOT ==================
+MODE: BRIEF
+channel: 2 | frame: 1 | fps: 60
+topology: FAIL — буфер 'Octavia_Buffer_Ch_2' не найден
+
+## ANOMALIES
+- buffer object 'Octavia_Buffer_Ch_2' missing
+
+================================================================================

@@ -1,0 +1,31 @@
+================== ARCHITECTURE ANALYSIS: [Graph_SADDLE_RING] (Graph_SADDLE_RING) ==================
+MODE: LOGICAL
+nodes_meat=2 | reroutes=0 | links=1 | reroutes_collapsed_in_wires=yes
+
+## SIGNAL INDEX
+(compact; full truth in MODULE FRAME below)
+### BUFFER WIRING (Object Info)
+  (none)
+### NAMED ATTR READS/WRITES
+  (none detected)
+### MACROS (octavia_macro)
+  (none)
+### ZONE HINTS (index, not proof)
+  (none)
+### GROUP I/O
+  Group Input sockets: Geometry
+  Group Output sockets: Geometry
+
+UNASSIGNED ORPHAN NODES: ==============================
+
+  Node: [Group Input] | LABEL: "NONE" (Type: NodeGroupInput)
+    Outputs:
+        0. "Geometry" -> LINKED (1 consumer)
+
+  Node: [Group Output] | LABEL: "NONE" (Type: NodeGroupOutput)
+    Inputs:
+        0. "Geometry" -> LINKED (Slot 0)
+           <--- (Wire #1) From: [Group Input] (Label: "NONE") [Socket: "Geometry"]
+  undocumented_dna: 2
+
+================================================================================
