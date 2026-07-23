@@ -1,94 +1,141 @@
-================== OCTAVIA BUFFER SNAPSHOT (Channel 1) ==================
-Scene frame_current: 1 | fps: 60
-Buffer object: Octavia_Buffer_Ch_1 | mesh: Octavia_Buffer_Ch_1 | verts(raw): 2208
-  hide_viewport=False hide_render=True hide_eye=True
-  Attributes: ['.select_vert', 'position', 'sharp_face', 'start_frame', 'end_frame', 'octavia_voice_id', 'octavia_macro_punch', 'octavia_macro_hold', 'octavia_macro_echo', 'hit_position', 'hit_normal', 'burst_position', 'burst_normal', 'burst_sub_index', 'oc_m_KickSpeed', 'oc_m_KickSize', 'oc_m_KickFade', 'oc_m_KickReach', 'oc_m_KickLength', 'oc_m_KickSnap', 'oc_m_KickBurst', 'oc_m_KickCollapse', 'oc_m_KickColCount', 'oc_m_KickColSpeed', 'oc_m_KickColReach', 'oc_m_KickPlate', 'oc_m_KickCols', 'oc_m_burst_count']
-  Объекты с похожим именем в .blend: ['Octavia_Buffer_Ch_1']
+================== OCTAVIA BUFFER SNAPSHOT ==================
+MODE: BRIEF
+channel: 1 | frame: 221 | fps: 60
+topology: OK | object=Octavia_Buffer_Ch_1 | mesh=Octavia_Buffer_Ch_1 | verts=2208 (expect 2208)
+attrs: start_frame, end_frame, octavia_voice_id, octavia_macro_punch, octavia_macro_hold, octavia_macro_echo, hit_position, hit_normal, burst_position, burst_normal, burst_sub_index, oc_m_KickSpeed, oc_m_KickSize, oc_m_KickFade, oc_m_KickReach, oc_m_KickLength, oc_m_KickSnap, oc_m_KickBurst, oc_m_KickCollapse, oc_m_KickColCount, oc_m_KickColSpeed, oc_m_KickColReach, oc_m_KickPlate, oc_m_KickCols, oc_m_burst_count
 
---- ГРАФ КАНАЛА И ЦЕЛИ OBJECT INFO (главный подозреваемый) ---
-  Объект 'Cube': модификатор 'Octavia Channel 1' -> граф 'Graph_KICK_CUBES' (show_viewport=True)
-      Object Info 'Object Info' -> target: 'Octavia_Buffer_Ch_1'  [OK]
-      Object Info 'Object Info.001' -> target: 'Octavia_Buffer_Ch_1'  [OK]
+## CONTRACT
+Zones: A notes 0–127 | B voices 128–159 | C salvo 160–2207
+Salvo index: 160 + note×16 + p  (p=0..15)
+hit_* / burst_* = world freeze at ONSET (playhead enters note); PRESS may write live draft
+Salvo: RAW emitter.data+matrix_world faces (not evaluated); pivot fallback Empty/Curve
+Onset: idle if same matrix fingerprint; else re-sample; spatial_only if salvo exists (no end rewrite)
+Full contract: authoring_kit → octavia-engine.mdc (this is an anchor only)
 
---- КОНФИГУРАЦИЯ ГОЛОСОВ ---
-  Voice 0: key='K' hw_id=0 punch=0.5 hold=0.5 echo=0.5 | overrides: burst_count=5.0
+## WIRING
+buffer hide_viewport=False hide_render=True hide_eye=True | dups=['Octavia_Buffer_Ch_1']
+host 'Cube' mod 'Octavia Channel 1' → graph 'Graph_KICK_CUBES' (show_viewport=True)
+  Object Info 'Object Info' → 'Octavia_Buffer_Ch_1' [OK]
+  Object Info 'Object Info.001' → 'Octavia_Buffer_Ch_1' [OK]
+Object Info summary: OK=2 FAIL=0
+graph snapshot hint: graph_snapshots/ → Graph_KICK_CUBES
 
---- СЫРЫЕ ДАННЫЕ (original mesh): КОНФИГ-ВЕРШИНЫ (128-159), непустые ---
-  Vertex 128 (hw 0): oc_m_KickSpeed=0.887, oc_m_KickSize=0.0618, oc_m_KickFade=25.0435, oc_m_KickReach=2.3049, oc_m_KickLength=0.1837, oc_m_KickSnap=0.6348, oc_m_KickBurst=0.913, oc_m_KickCollapse=16.9322, oc_m_KickColCount=1.0, oc_m_KickColSpeed=0.4652, oc_m_KickColReach=2.7174, oc_m_KickPlate=0.0, oc_m_KickCols=5.7913, oc_m_burst_count=5.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 129 (hw 1): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 130 (hw 2): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 131 (hw 3): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 132 (hw 4): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 133 (hw 5): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 134 (hw 6): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 135 (hw 7): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 136 (hw 8): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 137 (hw 9): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 138 (hw 10): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 139 (hw 11): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 140 (hw 12): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 141 (hw 13): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 142 (hw 14): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 143 (hw 15): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 144 (hw 16): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 145 (hw 17): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 146 (hw 18): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 147 (hw 19): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 148 (hw 20): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 149 (hw 21): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 150 (hw 22): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 151 (hw 23): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 152 (hw 24): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 153 (hw 25): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 154 (hw 26): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 155 (hw 27): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 156 (hw 28): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 157 (hw 29): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 158 (hw 30): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 159 (hw 31): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
---- СЫРЫЕ ДАННЫЕ (original mesh): СЛОТЫ НОТ (0-127), активные (start>=1) ---
-  (нет активных слотов)
+## VOICES (live)
+hw0 voice[0] key='K' punch=0.5 hold=0.5 echo=0.5 | overrides: burst_count=5.0
+  buffer@128: oc_m_KickSpeed=0.887, oc_m_KickSize=0.0618, oc_m_KickFade=25.0435, oc_m_KickReach=2.3049, oc_m_KickLength=0.1837, oc_m_KickSnap=0.6348, oc_m_KickBurst=0.913, oc_m_KickCollapse=16.9322, oc_m_KickColCount=1.0, oc_m_KickColSpeed=0.4652, oc_m_KickColReach=2.7174, oc_m_KickPlate=0.0, oc_m_KickCols=5.7913, oc_m_burst_count=5.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw1 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@129: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw2 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@130: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw3 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@131: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw4 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@132: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw5 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@133: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw6 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@134: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw7 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@135: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw8 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@136: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw9 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@137: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw10 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@138: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw11 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@139: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw12 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@140: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw13 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@141: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw14 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@142: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw15 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@143: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw16 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@144: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw17 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@145: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw18 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@146: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw19 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@147: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw20 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@148: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw21 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@149: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw22 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@150: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw23 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@151: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw24 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@152: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw25 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@153: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw26 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@154: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw27 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@155: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw28 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@156: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw29 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@157: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw30 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@158: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+hw31 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
+  buffer@159: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
+empty hw: none
 
-=== ВЫЧИСЛЕННЫЕ ДАННЫЕ @ frame 1 (это видит граф) ===
-  eval verts: 2208 | eval attrs: ['.select_vert', 'position', 'sharp_face', 'start_frame', 'end_frame', 'octavia_voice_id', 'octavia_macro_punch', 'octavia_macro_hold', 'octavia_macro_echo', 'hit_position', 'hit_normal', 'burst_position', 'burst_normal', 'burst_sub_index', 'oc_m_KickSpeed', 'oc_m_KickSize', 'oc_m_KickFade', 'oc_m_KickReach', 'oc_m_KickLength', 'oc_m_KickSnap', 'oc_m_KickBurst', 'oc_m_KickCollapse', 'oc_m_KickColCount', 'oc_m_KickColSpeed', 'oc_m_KickColReach', 'oc_m_KickPlate', 'oc_m_KickCols', 'oc_m_burst_count']
+## NOTES @ frame 221
+heuristic: contributing = start<=F and (end<0 or F<=end); echo/fade in graph may outlive end
+### CONTRIBUTING
+  (none)
+### RECENT/PAST
+  slot 0: start=73 end=181 status=past (past) vid=0.0
 
---- ВЫЧИСЛЕННЫЕ: КОНФИГ-ВЕРШИНЫ (128-159), непустые ---
-  Vertex 128 (hw 0): oc_m_KickSpeed=0.887, oc_m_KickSize=0.0618, oc_m_KickFade=25.0435, oc_m_KickReach=2.3049, oc_m_KickLength=0.1837, oc_m_KickSnap=0.6348, oc_m_KickBurst=0.913, oc_m_KickCollapse=16.9322, oc_m_KickColCount=1.0, oc_m_KickColSpeed=0.4652, oc_m_KickColReach=2.7174, oc_m_KickPlate=0.0, oc_m_KickCols=5.7913, oc_m_burst_count=5.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 129 (hw 1): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 130 (hw 2): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 131 (hw 3): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 132 (hw 4): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 133 (hw 5): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 134 (hw 6): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 135 (hw 7): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 136 (hw 8): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 137 (hw 9): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 138 (hw 10): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 139 (hw 11): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 140 (hw 12): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 141 (hw 13): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 142 (hw 14): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 143 (hw 15): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 144 (hw 16): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 145 (hw 17): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 146 (hw 18): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 147 (hw 19): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 148 (hw 20): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 149 (hw 21): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 150 (hw 22): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 151 (hw 23): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 152 (hw 24): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 153 (hw 25): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 154 (hw 26): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 155 (hw 27): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 156 (hw 28): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 157 (hw 29): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 158 (hw 30): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
-  Vertex 159 (hw 31): oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
---- ВЫЧИСЛЕННЫЕ: СЛОТЫ НОТ (0-127), активные (start>=1) ---
-  (нет активных слотов)
+## HIT / SALVO SUMMARY
+contributing_notes=0 | hit_nonzero=0 | salvo_particles_active=0 | pivot_fallback_suspect=0
+allocated_note_slots=1 | live_voices_hw=32
 
---- АНИМАЦИОННЫЕ КРИВЫЕ БУФЕРА ---
-  (Нет анимации на буфере)
+## ANOMALIES
+- hw1 has macros/overrides but empty key
+- hw2 has macros/overrides but empty key
+- hw3 has macros/overrides but empty key
+- hw4 has macros/overrides but empty key
+- hw5 has macros/overrides but empty key
+- hw6 has macros/overrides but empty key
+- hw7 has macros/overrides but empty key
+- hw8 has macros/overrides but empty key
+- hw9 has macros/overrides but empty key
+- hw10 has macros/overrides but empty key
+- hw11 has macros/overrides but empty key
+- hw12 has macros/overrides but empty key
+- hw13 has macros/overrides but empty key
+- hw14 has macros/overrides but empty key
+- hw15 has macros/overrides but empty key
+- hw16 has macros/overrides but empty key
+- hw17 has macros/overrides but empty key
+- hw18 has macros/overrides but empty key
+- hw19 has macros/overrides but empty key
+- hw20 has macros/overrides but empty key
+- hw21 has macros/overrides but empty key
+- hw22 has macros/overrides but empty key
+- hw23 has macros/overrides but empty key
+- hw24 has macros/overrides but empty key
+- hw25 has macros/overrides but empty key
+- hw26 has macros/overrides but empty key
+- hw27 has macros/overrides but empty key
+- hw28 has macros/overrides but empty key
+- hw29 has macros/overrides but empty key
+- hw30 has macros/overrides but empty key
+- hw31 has macros/overrides but empty key
+
+## CURVES (index)
+  Action: Octavia_Buffer_Ch_1Action | curves_total=59
+  slot 0: start@73.0 end@73.0; salvo p0→v160@73.0, p1→v161@73.0, p2→v162@73.0, p3→v163@73.0, p4→v164@73.0
+
+## EVAL
+raw vs eval: identical (checked contributing/allocated slots)
 
 ================================================================================

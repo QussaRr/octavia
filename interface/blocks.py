@@ -1,6 +1,8 @@
 import bpy
 import bisect
 from .draw_utils import draw_rect
+from .echo_trail import echo_trail_context_for_channel, ghost_frames_for_voice
+
 
 def draw_channel_blocks(layout):
     context = layout['context']
@@ -66,67 +68,18 @@ def draw_channel_blocks(layout):
                     voice_curves[idx] = fc
 
             try:
-                # Данные для хвоста-призрака (echo): либо legacy DECAY в секундах,
-                # либо abs(Offset) / ReturnSpeed → кадры (как в графе POLY_TEST).
-                ghost_group = None
-                decay_seconds_legacy = None
-                offset_node_name = None
-                speed_node_name = None
-                ch_mesh_obj = next((o for o in scene.objects if o.type == 'MESH' and o.modifiers.get(f"Octavia Channel {i}")), None)
-                if ch_mesh_obj:
-                    mod = ch_mesh_obj.modifiers.get(f"Octavia Channel {i}")
-                    if mod and mod.node_group:
-                        ghost_group = mod.node_group
-                        for n in ghost_group.nodes:
-                            if n.bl_idname != 'ShaderNodeValue':
-                                continue
-                            macro = getattr(n, "octavia_macro", None)
-                            friendly = (getattr(macro, "friendly_name", "") or "").upper() if macro else ""
-                            name_u = n.name.upper()
-                            label_u = (n.label or "").upper()
-                            if "DECAY" in name_u or "DECAY" in label_u or "DECAY" in friendly:
-                                try:
-                                    decay_seconds_legacy = n.outputs[0].default_value
-                                except Exception:
-                                    pass
-                            if macro and getattr(macro, "is_macro", False):
-                                cat = getattr(macro, "category", "")
-                                if cat == 'HOLD' and offset_node_name is None:
-                                    offset_node_name = n.name
-                                elif cat == 'ECHO' and speed_node_name is None:
-                                    speed_node_name = n.name
-                        if offset_node_name is None and ghost_group.nodes.get("Offset"):
-                            offset_node_name = "Offset"
-                        if speed_node_name is None and ghost_group.nodes.get("ReturnSpeed"):
-                            speed_node_name = "ReturnSpeed"
-
-                def _voice_macro_value(hw_id, node_name, fallback=0.0):
-                    if not node_name:
-                        return fallback
-                    ch_data_g = scene.octavia_channels_data[i - 1] if len(scene.octavia_channels_data) >= i else None
-                    if ch_data_g:
-                        voice = next((v for v in ch_data_g.voices if v.hardware_id == hw_id), None)
-                        if voice:
-                            ov = voice.macro_overrides.get(node_name)
-                            if ov:
-                                return ov.value
-                    if ghost_group:
-                        node = ghost_group.nodes.get(node_name)
-                        if node and node.outputs:
-                            try:
-                                return node.outputs[0].default_value
-                            except Exception:
-                                pass
-                    return fallback
+                # Хвост echo: KickFade (кадры) / DECAY (сек) / Offset÷ReturnSpeed (POLY_TEST)
+                echo_ctx = echo_trail_context_for_channel(scene, i)
+                ghost_group = decay_seconds_legacy = None
+                echo_frame_nodes = echo_speed_nodes = hold_nodes = ()
+                if echo_ctx:
+                    ghost_group, decay_seconds_legacy, echo_frame_nodes, echo_speed_nodes, hold_nodes = echo_ctx
 
                 def _ghost_frames_for_voice(hw_id):
-                    if decay_seconds_legacy is not None:
-                        return max(0.0, decay_seconds_legacy * fps)
-                    if offset_node_name and speed_node_name:
-                        dist = abs(_voice_macro_value(hw_id, offset_node_name, 0.0))
-                        speed = max(0.01, _voice_macro_value(hw_id, speed_node_name, 0.01))
-                        return (dist / speed) * fps
-                    return 0.0
+                    return ghost_frames_for_voice(
+                        hw_id, fps, ghost_group, i, scene,
+                        decay_seconds_legacy, echo_frame_nodes, echo_speed_nodes, hold_nodes,
+                    )
                             
                 for idx in range(128):
                     st_fc = start_curves.get(idx)

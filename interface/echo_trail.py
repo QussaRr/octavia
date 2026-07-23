@@ -34,7 +34,11 @@ def scan_graph_echo_macros(node_group):
             continue
         cat = getattr(macro, "category", "")
         if cat == 'ECHO':
-            if macro_looks_like_return_speed(macro):
+            name_u = n.name.upper()
+            # KickFade / *Fade* — всегда длительность в кадрах (не «скорость»)
+            if "FADE" in name_u or "DECAY" in name_u:
+                echo_frame_nodes.append(n.name)
+            elif macro_looks_like_return_speed(macro):
                 echo_speed_nodes.append(n.name)
             else:
                 echo_frame_nodes.append(n.name)
@@ -84,7 +88,12 @@ def ghost_frames_for_voice(
         return fallback
 
     if echo_frame_nodes:
-        return max(0.0, voice_macro(echo_frame_nodes[0], 0.0))
+        # Kick: KickFade — длина echo; Collapse/др. тоже «кадры», но хвост UI = Fade
+        preferred = next(
+            (n for n in echo_frame_nodes if "FADE" in n.upper() or "DECAY" in n.upper()),
+            echo_frame_nodes[0],
+        )
+        return max(0.0, voice_macro(preferred, 0.0))
 
     if echo_speed_nodes and hold_nodes:
         dist = abs(voice_macro(hold_nodes[0], 0.0))
