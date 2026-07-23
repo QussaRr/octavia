@@ -284,14 +284,14 @@ def handle_block_clicks(self, context, event, layout, mx, my, area):
                
                 bpy.ops.octavia.rescan_macros()
                 from octavia.interface.popup_geometry import prepare_channel_settings_popup
-                region = layout.get('region')
+                region = layout.get('region') or getattr(context, 'region', None)
                 prepare_channel_settings_popup(
                     OCTAVIA_OT_ui_handler, scene, ch_idx,
                     region=region, mx=mx, my=my,
                 )
             else:
                 from octavia.interface.popup_geometry import set_popup_anchor_region, DEFAULT_POPUP_W
-                region = layout.get('region')
+                region = layout.get('region') or getattr(context, 'region', None)
                 OCTAVIA_OT_ui_handler._selected_channel_idx = ch_idx
                 OCTAVIA_OT_ui_handler._active_popup = 'ADD_CHANNEL'
                 OCTAVIA_OT_ui_handler._popup_w = DEFAULT_POPUP_W

@@ -1,6 +1,6 @@
 ================== OCTAVIA BUFFER SNAPSHOT ==================
 MODE: BRIEF
-channel: 1 | frame: 221 | fps: 60
+channel: 1 | frame: 1 | fps: 60
 topology: OK | object=Octavia_Buffer_Ch_1 | mesh=Octavia_Buffer_Ch_1 | verts=2208 (expect 2208)
 attrs: start_frame, end_frame, octavia_voice_id, octavia_macro_punch, octavia_macro_hold, octavia_macro_echo, hit_position, hit_normal, burst_position, burst_normal, burst_sub_index, oc_m_KickSpeed, oc_m_KickSize, oc_m_KickFade, oc_m_KickReach, oc_m_KickLength, oc_m_KickSnap, oc_m_KickBurst, oc_m_KickCollapse, oc_m_KickColCount, oc_m_KickColSpeed, oc_m_KickColReach, oc_m_KickPlate, oc_m_KickCols, oc_m_burst_count
 
@@ -87,16 +87,16 @@ hw31 voice[?] key='—' punch=0.0 hold=0.0 echo=0.0 | overrides: нет
   buffer@159: oc_m_KickSpeed=0.0, oc_m_KickSize=0.0, oc_m_KickFade=0.0, oc_m_KickReach=0.0, oc_m_KickLength=0.0, oc_m_KickSnap=0.0, oc_m_KickBurst=0.0, oc_m_KickCollapse=0.0, oc_m_KickColCount=0.0, oc_m_KickColSpeed=0.0, oc_m_KickColReach=0.0, oc_m_KickPlate=0.0, oc_m_KickCols=0.0, oc_m_burst_count=0.0, octavia_macro_punch=0.5, octavia_macro_hold=0.5, octavia_macro_echo=0.5
 empty hw: none
 
-## NOTES @ frame 221
+## NOTES @ frame 1
 heuristic: contributing = start<=F and (end<0 or F<=end); echo/fade in graph may outlive end
 ### CONTRIBUTING
   (none)
 ### RECENT/PAST
-  slot 0: start=73 end=181 status=past (past) vid=0.0
+  (none)
 
 ## HIT / SALVO SUMMARY
 contributing_notes=0 | hit_nonzero=0 | salvo_particles_active=0 | pivot_fallback_suspect=0
-allocated_note_slots=1 | live_voices_hw=32
+allocated_note_slots=0 | live_voices_hw=32
 
 ## ANOMALIES
 - hw1 has macros/overrides but empty key
@@ -132,8 +132,7 @@ allocated_note_slots=1 | live_voices_hw=32
 - hw31 has macros/overrides but empty key
 
 ## CURVES (index)
-  Action: Octavia_Buffer_Ch_1Action | curves_total=59
-  slot 0: start@73.0 end@73.0; salvo p0→v160@73.0, p1→v161@73.0, p2→v162@73.0, p3→v163@73.0, p4→v164@73.0
+  (no action on buffer mesh)
 
 ## EVAL
 raw vs eval: identical (checked contributing/allocated slots)

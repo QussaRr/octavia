@@ -223,7 +223,9 @@ class OCTAVIA_OT_ui_handler(bpy.types.Operator):
           'fps': fps, 'pixels_per_second': pixels_per_second,
           'scroll_px': scroll_px,  # <--- ВОТ ЭТА СУКА ТУТ ДОЛЖНА БЫТЬ!
           'left_margin': 15, 'right_margin': 15, 'header_w': 160, 'gap': 8,
-          'channel_h': 30, 'channel_gap': 8  
+          'channel_h': 30, 'channel_gap': 8,
+          'region': region,
+          'area': area,
         }
         layout['track_x'] = layout['left_margin'] + layout['header_w'] + layout['gap']
         layout['track_y'] = layout['win_h'] - 85
