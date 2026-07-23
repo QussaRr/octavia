@@ -1318,12 +1318,14 @@ def sanitize_buffer_after_erase(mesh):
     live = _live_note_slots(mesh)
     if not live:
         _clear_note_attribute_curves(mesh)
+        mark_buffer_attrs_need_purge(mesh)
         return
     for slot in range(NOTE_SLOT_COUNT):
         if slot not in live:
             wipe_note_slot_residue(mesh, slot)
     scrub_phantom_buffer_attrs(mesh)
     clear_note_timing_maps_cache()
+    mark_buffer_attrs_need_purge(mesh)
 
 
 def scrub_phantom_buffer_attrs(mesh):
@@ -2509,9 +2511,46 @@ def ensure_vj_listener(context=None):
     return bool(OCTAVIA_OT_vj_listener._running)
 
 
+# Сколько раз таймер ещё попробует поднять слушатель после клика по LIVE в DAW.
+_vj_listener_retry_left = 0
+
+
+def schedule_vj_listener(context=None, retries=8):
+    """Стартует слушатель сейчас + короткими ретраями.
+
+    Клик ● LIVE идёт из модалки ui_handler: bpy.ops…INVOKE внутри чужого modal
+    часто молча не поднимает второй modal — флаг LIVE горит, клавиши мертвы.
+    Таймер вызывает INVOKE уже вне стека клика.
+    """
+    global _vj_listener_retry_left
+    ensure_vj_listener(context)
+    if OCTAVIA_OT_vj_listener._running:
+        _vj_listener_retry_left = 0
+        return True
+    _vj_listener_retry_left = max(int(retries), 1)
+    if bpy.app.timers.is_registered(_timer_ensure_vj_listener):
+        bpy.app.timers.unregister(_timer_ensure_vj_listener)
+    bpy.app.timers.register(_timer_ensure_vj_listener, first_interval=0.05)
+    return False
+
+
 def _timer_ensure_vj_listener():
+    global _vj_listener_retry_left
+    scene = getattr(bpy.context, "scene", None)
+    if not scene or not getattr(scene, "vj_record_mode", False):
+        _vj_listener_retry_left = 0
+        return None
+    if OCTAVIA_OT_vj_listener._running:
+        _vj_listener_retry_left = 0
+        return None
     ensure_vj_listener()
-    return None
+    if OCTAVIA_OT_vj_listener._running:
+        _vj_listener_retry_left = 0
+        return None
+    _vj_listener_retry_left -= 1
+    if _vj_listener_retry_left <= 0:
+        return None
+    return 0.05
 
 
 class OCTAVIA_OT_kick_trigger(bpy.types.Operator):
@@ -2770,15 +2809,20 @@ class OCTAVIA_OT_toggle_mode(bpy.types.Operator):
     bl_label = "Toggle Octavia Mode"
    
     def execute(self, context):
+        global _vj_listener_retry_left
         scene = context.scene
         scene.vj_record_mode = not scene.vj_record_mode
 
         if scene.vj_record_mode:
-            ensure_vj_listener(context)
+            # Не полагаемся на один INVOKE из стека DAW-модалки — schedule + retry.
+            schedule_vj_listener(context)
         else:
             # Модалка сама завершится на следующем событии; маркер сбрасываем сразу,
             # чтобы самолечение не считало её живой.
             OCTAVIA_OT_vj_listener._running = False
+            _vj_listener_retry_left = 0
+            if bpy.app.timers.is_registered(_timer_ensure_vj_listener):
+                bpy.app.timers.unregister(_timer_ensure_vj_listener)
 
         obj = context.active_object
         if obj:

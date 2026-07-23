@@ -23,8 +23,17 @@ addon_keymaps = []
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+    from .channels.diagnostics import register_auto_graph_snapshot
+    from .channels.buffer_snapshot import register_auto_buffer_snapshot
+    register_auto_graph_snapshot()
+    register_auto_buffer_snapshot()
 
 def unregister():
+    from .channels.diagnostics import unregister_auto_graph_snapshot
+    from .channels.buffer_snapshot import unregister_auto_buffer_snapshot
+    unregister_auto_graph_snapshot()
+    unregister_auto_buffer_snapshot()
+
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)
     addon_keymaps.clear()

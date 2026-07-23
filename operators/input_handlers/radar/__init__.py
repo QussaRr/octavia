@@ -12,7 +12,7 @@ def handle_mousemove(self, context, event, layout, area):
     scroll_px = (scene.octavia_scroll / fps) * pixels_per_second
 
     # 1. Проверяем интерфейсный щит попапов и автоматизацию ручек
-    if handle_popup_and_macros(self, context, mx, my, area, layout=layout):
+    if handle_popup_and_macros(self, context, mx, my, area):
         return {'RUNNING_MODAL'}
 
     # 📸 СЛУШАТЕЛЬ СТАРЫХ СОСТОЯНИЙ ДЛЯ ОПТИМИЗАЦИИ ПЕРЕРИСОВКИ ЭКРАНА

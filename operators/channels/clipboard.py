@@ -261,14 +261,17 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
         erased_set = getattr(sys, "_octavia_virtual_erased", set())
         if not erased_set:
             return {'FINISHED'}
-            
-        obj = context.active_object
-        if not obj: return {'CANCELLED'}
+
+        # Не требуем active_object: иначе CANCELLED → виртуальный erase висит,
+        # на холсте пусто, а start/end в Action/attr остаются.
             
         target_channels = set()
         for b_id in erased_set:
             parts = b_id.split("_")
-            target_channels.add(int(parts[1]))
+            try:
+                target_channels.add(int(parts[1]))
+            except (IndexError, ValueError):
+                continue
             
         from ..vj_core import push_undo_step
         # Слепок ДО удаления: без ID из текущего erased_set, иначе undo вернёт
@@ -282,9 +285,12 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
         blocks_by_ch = {}
         for b_id in erased_set:
             parts = b_id.split("_")
-            ch = int(parts[1])
-            slot_idx = int(parts[3])
-            frame = float(parts[5])
+            try:
+                ch = int(parts[1])
+                slot_idx = int(parts[3])
+                frame = float(parts[5])
+            except (IndexError, ValueError):
+                continue
             if ch not in blocks_by_ch: blocks_by_ch[ch] = []
             blocks_by_ch[ch].append((slot_idx, frame))
             
@@ -336,6 +342,11 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
                     slots_to_clean[slot_idx] = []
                 slots_to_clean[slot_idx].append(frame)
 
+            def _kp_matches_note_start(kp, start_frame):
+                """block_id хранит co[1]; ключ живёт на co[0]≈co[1]. Сносим оба."""
+                t = float(start_frame)
+                return abs(float(kp.co[0]) - t) < 0.1 or abs(float(kp.co[1]) - t) < 0.1
+
             for slot_idx, block_frames in slots_to_clean.items():
                 st_tuple = start_curves.get(slot_idx)
                 en_tuple = end_curves.get(slot_idx)
@@ -345,7 +356,7 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
                     if st_tuple:
                         st_fc, st_owner = st_tuple
                         kps_st = sorted(
-                            [k.co[1] for k in st_fc.keyframe_points if k.co[1] >= 1.0]
+                            [float(k.co[1]) for k in st_fc.keyframe_points if float(k.co[1]) >= 1.0]
                         )
                         try:
                             f_idx = next(
@@ -359,7 +370,7 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
 
                         changed_st = False
                         for kp in reversed(list(st_fc.keyframe_points)):
-                            if abs(kp.co[0] - start_frame) < 0.1:
+                            if _kp_matches_note_start(kp, start_frame):
                                 st_fc.keyframe_points.remove(kp)
                                 changed_st = True
                         if changed_st:
@@ -382,7 +393,7 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
                         v_fc, v_owner = v_tuple
                         changed_v = False
                         for kp in reversed(list(v_fc.keyframe_points)):
-                            if abs(kp.co[0] - start_frame) < 0.1:
+                            if _kp_matches_note_start(kp, start_frame):
                                 v_fc.keyframe_points.remove(kp)
                                 changed_v = True
                         if changed_v:
@@ -392,7 +403,7 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
                     for h_fc, h_owner in hit_curves.get(slot_idx, []):
                         changed_h = False
                         for kp in reversed(list(h_fc.keyframe_points)):
-                            if abs(kp.co[0] - start_frame) < 0.1:
+                            if _kp_matches_note_start(kp, start_frame):
                                 h_fc.keyframe_points.remove(kp)
                                 changed_h = True
                         if changed_h:
@@ -450,6 +461,9 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
             clear_note_timing_maps_cache,
             clear_onset_latch,
             mark_buffer_attrs_need_purge,
+            buffer_has_active_note_keys,
+            scrub_phantom_buffer_attrs,
+            _clear_note_attribute_curves,
         )
         clear_note_timing_maps_cache()
         clear_onset_latch()
@@ -463,6 +477,10 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
             try:
                 mark_buffer_attrs_need_purge(b_obj.data)
                 sanitize_buffer_after_erase(b_obj.data)
+                if not buffer_has_active_note_keys(b_obj.data):
+                    _clear_note_attribute_curves(b_obj.data)
+                else:
+                    scrub_phantom_buffer_attrs(b_obj.data)
                 b_obj.data.update()
                 b_obj.update_tag()
             except Exception as e:
@@ -477,7 +495,9 @@ class OCTAVIA_OT_commit_eraser_transaction(bpy.types.Operator):
          
         erased_set.clear()
         bpy.ops.octavia.rescan_macros()
-        obj.update_tag()
+        obj = context.active_object
+        if obj:
+            obj.update_tag()
         context.view_layer.update()
         
         return {'FINISHED'}
