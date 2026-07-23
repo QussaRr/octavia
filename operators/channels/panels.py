@@ -11,6 +11,7 @@ class OCTAVIA_PT_main_panel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        scene = context.scene  
        
         # Постоянный блок медиа-стриминга для длинных сетов
         box_audio = layout.box()
@@ -20,7 +21,9 @@ class OCTAVIA_PT_main_panel(bpy.types.Panel):
        
         # Инструменты навигации
         layout.column().operator("octavia.switch_workspace", text="ОТКРЫТЬ ИНТЕРФЕЙС DAW", icon='WINDOW')
-        # LIVE — только на линейке DAW (● LIVE), не в N-панели
+       
+        row = layout.row()
+        row.operator("octavia.toggle_mode", text="● LIVE ИМПУЛЬС (K)" if scene.vj_record_mode else "○ ПОТОК (ДИЗАЙН)", icon='REC' if scene.vj_record_mode else 'TIME')
        
         # Инструменты разработки и экспорта (Панель полностью восстановлена)
         layout.separator()
@@ -54,7 +57,6 @@ class OCTAVIA_PT_vsd_inspector(bpy.types.Panel):
         box_snap = layout.box()
         box_snap.label(text="СЛЕПОК ГРАФА ДЛЯ ИИ:", icon='FILE_TEXT')
         box_snap.operator("octavia.snapshot_graph", text="СНЯТЬ СЛЕПОК ГРАФА", icon='NODETREE')
-        box_snap.prop(context.scene, "octavia_auto_graph_snapshot", text="Авто после правок")
         box_snap.operator(
             "octavia.export_authoring_kit",
             text="ПАПКА ДЛЯ СЕССИИ С ИИ",

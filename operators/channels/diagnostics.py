@@ -2,8 +2,6 @@ import bpy
 import os
 import re
 import shutil
-import time
-from bpy.app.handlers import persistent
 
 
 def _addon_dir():
@@ -168,157 +166,6 @@ def _build_graph_report(group, mod_name):
     return lines
 
 
-def _resolve_mod_name(tree, context=None):
-    mod_name = tree.name
-    obj = getattr(context, "active_object", None) if context else None
-    if obj:
-        active_mod = next((m for m in obj.modifiers if m.type == 'NODES' and m.node_group == tree), None)
-        if active_mod:
-            mod_name = active_mod.name
-    return mod_name
-
-
-def write_graph_snapshot(scene, group, mod_name=None, *, print_console=True, report_text=None):
-    """Пишет слепок графа на диск (и опционально в консоль). Возвращает (paths, errors, report_text)."""
-    if group is None:
-        return [], ["нет графа"], ""
-
-    if not mod_name:
-        mod_name = group.name
-
-    if report_text is None:
-        lines = _build_graph_report(group, mod_name)
-        report_text = "\n".join(lines)
-
-    if print_console:
-        print("\n" + report_text)
-
-    safe_name = re.sub(r'[^A-Za-z0-9_.-]+', "_", group.name).strip("_") or "graph"
-    filename = f"{safe_name}.txt"
-    written = []
-    errors = []
-
-    for snapshots_dir in _graph_snapshot_dirs(scene):
-        try:
-            os.makedirs(snapshots_dir, exist_ok=True)
-            file_path = os.path.join(snapshots_dir, filename)
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(report_text)
-            written.append(file_path)
-        except Exception as e:
-            errors.append(f"{snapshots_dir}: {e}")
-
-    return written, errors, report_text
-
-
-# ─── AUTO SNAPSHOT: debounce после правок Geometry Nodes ───
-_AUTO_DEBOUNCE_SEC = 1.2
-_auto_dirty_until = 0.0
-_auto_last_hashes = {}  # node_group.name -> hash(report_text)
-
-
-def _iter_open_geonode_trees():
-    """Все Geometry NodeTree, открытые сейчас в Node Editor."""
-    seen = set()
-    wm = getattr(bpy.context, "window_manager", None)
-    if not wm:
-        return
-    for window in wm.windows:
-        screen = getattr(window, "screen", None)
-        if not screen:
-            continue
-        for area in screen.areas:
-            if area.type != 'NODE_EDITOR':
-                continue
-            space = area.spaces.active
-            if not space or space.tree_type != 'GeometryNodeTree':
-                continue
-            tree = space.edit_tree
-            if not tree or tree.name in seen:
-                continue
-            seen.add(tree.name)
-            yield tree
-
-
-def _depsgraph_touched_geonodes(depsgraph):
-    """True, если в апдейте есть Geometry NodeTree."""
-    for update in depsgraph.updates:
-        id_data = update.id
-        orig = getattr(id_data, "original", id_data)
-        if isinstance(orig, bpy.types.NodeTree) and getattr(orig, "type", "") == 'GEOMETRY':
-            return True
-    return False
-
-
-def _flush_auto_graph_snapshots():
-    """Таймер: ждём тишину после правок, потом тихо перезаписываем слепки."""
-    global _auto_dirty_until
-
-    remaining = _auto_dirty_until - time.time()
-    if remaining > 0.05:
-        return remaining
-
-    scene = getattr(bpy.context, "scene", None)
-    if not scene or not getattr(scene, "octavia_auto_graph_snapshot", True):
-        return None
-
-    # Не дёргать диск во время плейбэка анимации
-    screen = getattr(bpy.context, "screen", None)
-    if screen and getattr(screen, "is_animation_playing", False):
-        return 0.5
-
-    for tree in _iter_open_geonode_trees():
-        try:
-            mod_name = _resolve_mod_name(tree, bpy.context)
-            lines = _build_graph_report(tree, mod_name)
-            report_text = "\n".join(lines)
-            text_hash = hash(report_text)
-            if _auto_last_hashes.get(tree.name) == text_hash:
-                continue
-
-            written, errors, _ = write_graph_snapshot(
-                scene, tree, mod_name, print_console=False, report_text=report_text,
-            )
-            _auto_last_hashes[tree.name] = text_hash
-            if written:
-                print(f"[Octavia] auto snapshot → {os.path.basename(written[0])}")
-            elif errors:
-                print(f"[Octavia] auto snapshot fail ({tree.name}): {'; '.join(errors)}")
-        except Exception as e:
-            print(f"[Octavia] auto snapshot error ({getattr(tree, 'name', '?')}): {e}")
-
-    return None
-
-
-@persistent
-def _on_depsgraph_auto_snapshot(scene, depsgraph):
-    if not getattr(scene, "octavia_auto_graph_snapshot", True):
-        return
-    if not _depsgraph_touched_geonodes(depsgraph):
-        return
-    # Есть ли вообще открытый редактор геонод — иначе нечего снимать
-    if not any(True for _ in _iter_open_geonode_trees()):
-        return
-
-    global _auto_dirty_until
-    _auto_dirty_until = time.time() + _AUTO_DEBOUNCE_SEC
-    if not bpy.app.timers.is_registered(_flush_auto_graph_snapshots):
-        bpy.app.timers.register(_flush_auto_graph_snapshots, first_interval=_AUTO_DEBOUNCE_SEC)
-
-
-def register_auto_graph_snapshot():
-    if _on_depsgraph_auto_snapshot not in bpy.app.handlers.depsgraph_update_post:
-        bpy.app.handlers.depsgraph_update_post.append(_on_depsgraph_auto_snapshot)
-
-
-def unregister_auto_graph_snapshot():
-    if _on_depsgraph_auto_snapshot in bpy.app.handlers.depsgraph_update_post:
-        bpy.app.handlers.depsgraph_update_post.remove(_on_depsgraph_auto_snapshot)
-    if bpy.app.timers.is_registered(_flush_auto_graph_snapshots):
-        bpy.app.timers.unregister(_flush_auto_graph_snapshots)
-    _auto_last_hashes.clear()
-
-
 class OCTAVIA_OT_snapshot_graph(bpy.types.Operator):
     """Снимает архитектурный слепок активного графа Geometry Nodes: печатает в консоль и пишет файл на диск"""
     bl_idname = "octavia.snapshot_graph"
@@ -337,17 +184,37 @@ class OCTAVIA_OT_snapshot_graph(bpy.types.Operator):
             self.report({'WARNING'}, "Граф геонод не открыт!")
             return {'CANCELLED'}
 
-        mod_name = _resolve_mod_name(group, context)
-        written, errors, report_text = write_graph_snapshot(
-            context.scene, group, mod_name, print_console=True,
-        )
-        _auto_last_hashes[group.name] = hash(report_text)
+        mod_name = group.name
+        obj = context.active_object
+        if obj:
+            active_mod = next((m for m in obj.modifiers if m.type == 'NODES' and m.node_group == group), None)
+            if active_mod:
+                mod_name = active_mod.name
+
+        lines = _build_graph_report(group, mod_name)
+        report_text = "\n".join(lines)
+
+        print("\n" + report_text)
+
+        safe_name = re.sub(r'[^A-Za-z0-9_.-]+', "_", group.name).strip("_") or "graph"
+        filename = f"{safe_name}.txt"
+        written = []
+        errors = []
+
+        for snapshots_dir in _graph_snapshot_dirs(context.scene):
+            try:
+                os.makedirs(snapshots_dir, exist_ok=True)
+                file_path = os.path.join(snapshots_dir, filename)
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(report_text)
+                written.append(file_path)
+            except Exception as e:
+                errors.append(f"{snapshots_dir}: {e}")
 
         if not written:
             self.report({'WARNING'}, f"Слепок в консоли, но файл не записан: {'; '.join(errors)}")
             return {'FINISHED'}
 
-        filename = os.path.basename(written[0])
         msg = f"Слепок графа записан ({len(written)}): {filename}"
         if errors:
             msg += f" | ошибки: {'; '.join(errors)}"
@@ -398,6 +265,148 @@ class OCTAVIA_OT_export_authoring_kit(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class OCTAVIA_OT_snapshot_buffer(bpy.types.Operator):
+    """Снимает слепок меш-буфера активного канала (сырые + вычисленные данные) в файл для ИИ"""
+    bl_idname = "octavia.snapshot_buffer"
+    bl_label = "Снять слепок буфера"
+    bl_options = {'REGISTER', 'INTERNAL'}
+
+    def _attr_val(self, m, name, idx):
+        a = m.attributes.get(name)
+        if not a or idx >= len(a.data):
+            return None
+        return a.data[idx].value
+
+    def execute(self, context):
+        scene = context.scene
+        ch_idx = scene.octavia_active_channel
+        buf_name = f"Octavia_Buffer_Ch_{ch_idx}"
+        buf_obj = scene.objects.get(buf_name) or bpy.data.objects.get(buf_name)
+
+        lines = []
+        lines.append(f"================== OCTAVIA BUFFER SNAPSHOT (Channel {ch_idx}) ==================")
+        lines.append(f"Scene frame_current: {scene.frame_current} | fps: {scene.render.fps}")
+
+        if not buf_obj or not buf_obj.data:
+            lines.append(f"!!! Буфер '{buf_name}' не найден в сцене.")
+            self._write(ch_idx, lines)
+            self.report({'WARNING'}, f"Буфер канала {ch_idx} не найден")
+            return {'FINISHED'}
+
+        mesh = buf_obj.data
+        attr_names = [a.name for a in mesh.attributes]
+        lines.append(f"Buffer object: {buf_obj.name} | mesh: {mesh.name} | verts(raw): {len(mesh.vertices)}")
+        lines.append(f"  hide_viewport={buf_obj.hide_viewport} hide_render={buf_obj.hide_render} hide_eye={buf_obj.hide_get()}")
+        lines.append(f"  Attributes: {attr_names}")
+
+        # Проверяем, сколько объектов с таким именем существует (дубликаты .001 — частый источник багов)
+        dup_objs = [o.name for o in bpy.data.objects if o.name.startswith(buf_name)]
+        lines.append(f"  Объекты с похожим именем в .blend: {dup_objs}")
+
+        # --- ГРАФ КАНАЛА И ЦЕЛИ OBJECT INFO ---
+        lines.append("\n--- ГРАФ КАНАЛА И ЦЕЛИ OBJECT INFO (главный подозреваемый) ---")
+        found_graph = False
+        for obj in scene.objects:
+            mod = obj.modifiers.get(f"Octavia Channel {ch_idx}")
+            if mod and mod.node_group:
+                found_graph = True
+                lines.append(f"  Объект '{obj.name}': модификатор '{mod.name}' -> граф '{mod.node_group.name}' (show_viewport={mod.show_viewport})")
+                for node in mod.node_group.nodes:
+                    if node.bl_idname == 'GeometryNodeObjectInfo':
+                        tgt = node.inputs[0].default_value if node.inputs else None
+                        tgt_name = tgt.name if tgt else "None"
+                        match = "OK" if tgt_name == buf_name else "!!! НЕ СОВПАДАЕТ С БУФЕРОМ КАНАЛА !!!"
+                        lines.append(f"      Object Info '{node.name}' -> target: '{tgt_name}'  [{match}]")
+        if not found_graph:
+            lines.append(f"  (На канале {ch_idx} не найдено объекта с графом 'Octavia Channel {ch_idx}')")
+
+        # --- ГОЛОСА ---
+        lines.append("\n--- КОНФИГУРАЦИЯ ГОЛОСОВ ---")
+        if len(scene.octavia_channels_data) >= ch_idx:
+            ch_data = scene.octavia_channels_data[ch_idx - 1]
+            for i, v in enumerate(ch_data.voices):
+                ov = ", ".join(f"{o.macro_id}={round(o.value, 3)}" for o in v.macro_overrides) or "нет"
+                lines.append(f"  Voice {i}: key='{v.key_code}' hw_id={v.hardware_id} punch={round(v.punch, 3)} hold={round(v.hold, 3)} echo={round(v.echo, 3)} | overrides: {ov}")
+
+        macro_attrs = [n for n in attr_names if n.startswith("oc_m_")] + ["octavia_macro_punch", "octavia_macro_hold", "octavia_macro_echo"]
+
+        def dump_region(m, tag):
+            lines.append(f"\n--- {tag}: КОНФИГ-ВЕРШИНЫ (128-159), непустые ---")
+            for idx in range(128, min(160, len(m.vertices))):
+                vals = []
+                for mn in macro_attrs:
+                    val = self._attr_val(m, mn, idx)
+                    if val is None:
+                        continue
+                    # Пользовательские макросы (oc_m_*) показываем ВСЕГДА, даже нулевые:
+                    # нулевой oc_m_* — частая причина «граф есть, привязка ОК, а движения нет».
+                    if mn.startswith("oc_m_") or abs(val) > 1e-9:
+                        vals.append(f"{mn}={round(val, 4)}")
+                if vals:
+                    lines.append(f"  Vertex {idx} (hw {idx - 128}): {', '.join(vals)}")
+            lines.append(f"--- {tag}: СЛОТЫ НОТ (0-127), активные (start>=1) ---")
+            any_slot = False
+            for idx in range(min(128, len(m.vertices))):
+                st = self._attr_val(m, "start_frame", idx)
+                en = self._attr_val(m, "end_frame", idx)
+                vid = self._attr_val(m, "octavia_voice_id", idx)
+                if st is not None and st >= 1.0:
+                    any_slot = True
+                    lines.append(f"  Slot {idx}: start={st} end={en} voice_id={vid}")
+            if not any_slot:
+                lines.append("  (нет активных слотов)")
+
+        dump_region(mesh, "СЫРЫЕ ДАННЫЕ (original mesh)")
+
+        # Вычисленные данные — то, что реально читает Object Info графа
+        try:
+            depsgraph = context.evaluated_depsgraph_get()
+            buf_eval = buf_obj.evaluated_get(depsgraph)
+            mesh_eval = buf_eval.data
+            lines.append(f"\n=== ВЫЧИСЛЕННЫЕ ДАННЫЕ @ frame {scene.frame_current} (это видит граф) ===")
+            lines.append(f"  eval verts: {len(mesh_eval.vertices)} | eval attrs: {[a.name for a in mesh_eval.attributes]}")
+            dump_region(mesh_eval, "ВЫЧИСЛЕННЫЕ")
+        except Exception as e:
+            lines.append(f"\n[Ошибка чтения вычисленных данных: {e}]")
+
+        # --- АНИМАЦИЯ ---
+        lines.append("\n--- АНИМАЦИОННЫЕ КРИВЫЕ БУФЕРА ---")
+        if mesh.animation_data and mesh.animation_data.action:
+            act = mesh.animation_data.action
+            curves = list(getattr(act, "curves", getattr(act, "fcurves", [])))
+            if hasattr(act, "layers"):
+                for layer in act.layers:
+                    for strip in getattr(layer, "strips", []):
+                        for bag in getattr(strip, "channelbags", []):
+                            curves.extend(getattr(bag, "fcurves", []))
+            lines.append(f"  Action: {act.name} | кривых: {len(curves)}")
+            for fc in curves:
+                if not hasattr(fc, "data_path"):
+                    continue
+                keys = [(round(k.co[0], 1), round(k.co[1], 3), k.interpolation) for k in fc.keyframe_points]
+                lines.append(f"  {fc.data_path}: {keys}")
+        else:
+            lines.append("  (Нет анимации на буфере)")
+
+        lines.append("\n================================================================================")
+        self._write(ch_idx, lines)
+        self.report({'INFO'}, f"Слепок буфера канала {ch_idx} записан")
+        return {'FINISHED'}
+
+    def _write(self, ch_idx, lines):
+        report_text = "\n".join(lines)
+        print("\n" + report_text)
+        addon_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        snapshots_dir = os.path.join(addon_dir, "buffer_snapshots")
+        try:
+            os.makedirs(snapshots_dir, exist_ok=True)
+            file_path = os.path.join(snapshots_dir, f"Buffer_Ch_{ch_idx}.txt")
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(report_text)
+        except Exception as e:
+            print(f"[Octavia] Не удалось записать слепок буфера: {e}")
+
+
 class OCTAVIA_OT_rescan_macros(bpy.types.Operator):
     """Сканирует граф активного канала и запекает макросы в плоский кэш сцены"""
     bl_idname = "octavia.rescan_macros"
@@ -443,26 +452,30 @@ class OCTAVIA_OT_rescan_macros(bpy.types.Operator):
             end_attr = mesh.attributes.get("end_frame")
            
             if start_attr and end_attr:
-                from ..vj_core import get_note_timing_curve_maps
-                st_map, _, _ = get_note_timing_curve_maps(mesh, use_cache=False)
-                voice_attr = mesh.attributes.get("octavia_voice_id")
-
-                # Сбрасываем слоты без живого start>=1 (не по самому факту пустой fcurve).
+                active_start_slots = set()
+                active_end_slots = set()
+               
+                if buf_obj.data.animation_data and buf_obj.data.animation_data.action:
+                    from ..vj_core import iter_action_fcurves
+                    import re
+                    for fc in iter_action_fcurves(buf_obj.data.animation_data.action):
+                        if not hasattr(fc, "data_path") or not fc.keyframe_points:
+                            continue
+                        m = re.search(r"data\[(\d+)\]", fc.data_path)
+                        if not m:
+                            continue
+                        idx = int(m.group(1))
+                        if "start_frame" in fc.data_path:
+                            active_start_slots.add(idx)
+                        elif "end_frame" in fc.data_path:
+                            active_end_slots.add(idx)
+               
+                # Сбрасываем только полностью пустые слоты (без f-кривых).
+                # Нельзя трогать end на слотах с ключами — иначе RELEASE режет все блоки.
                 for idx in range(min(128, len(start_attr.data))):
-                    st_fc = st_map.get(idx)
-                    has_live_start = bool(
-                        st_fc is not None
-                        and any(float(k.co[1]) >= 1.0 for k in st_fc.keyframe_points)
-                    )
-                    if not has_live_start:
+                    if idx not in active_start_slots and idx not in active_end_slots:
                         start_attr.data[idx].value = -1.0
                         end_attr.data[idx].value = -1.0
-                        if voice_attr and idx < len(voice_attr.data):
-                            voice_attr.data[idx].value = -1.0
-
-                from ..vj_core import _clear_note_attribute_curves, buffer_has_active_note_keys
-                if not buffer_has_active_note_keys(mesh):
-                    _clear_note_attribute_curves(mesh)
                        
                 mesh.update()
                 buf_obj.update_tag()

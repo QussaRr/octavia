@@ -228,21 +228,6 @@ def octavia_global_frame_handler(scene, *args):
                 # Насильно швыряем плейхед в НАЧАЛО ВЫДЕЛЕННОГО УЧАСТКА, а не в 1-й кадр!
                 scene.frame_current = loop_start_frame
 
-
-@persistent
-def octavia_frame_change_post(scene, *args):
-    """После кадра: onset-freeze + orphan/phantom scrub spreadsheet."""
-    try:
-        from .operators.vj_core import (
-            process_emitter_onset_resolves,
-            watch_kick_buffer_pressure,
-        )
-        process_emitter_onset_resolves(scene)
-        watch_kick_buffer_pressure(scene)
-    except Exception as e:
-        print(f"[Octavia] frame_change_post: {e}")
-
-
 @persistent
 def on_file_load(dummy1=None, dummy2=None):
     """Вызывается строго ПОСЛЕ загрузки или создания нового проекта"""
@@ -257,18 +242,6 @@ def on_file_load(dummy1=None, dummy2=None):
                     mesh["is_octavia_buffer"] = 1
     except Exception as e:
         print(f"[Octavia Load Error] Ошибка при санации мешей: {e}")
-
-    # LIVE modal не переживает File→Open / рестарт: флаг из .blend может гореть, слушатель мёртв.
-    try:
-        from .operators.vj_core import OCTAVIA_OT_vj_listener, schedule_vj_listener
-        OCTAVIA_OT_vj_listener._running = False
-        schedule_vj_listener(None, retries=12)
-    except Exception as e:
-        print(f"[Octavia Load Error] LIVE listener schedule failed: {e}")
-
-    # Виртуальный ластик не сериализуется — но set в sys может пережить F8 и прятать ноты.
-    if hasattr(sys, "_octavia_virtual_erased"):
-        sys._octavia_virtual_erased.clear()
 
     # 🔥 БРОНЕБОЙНЫЙ СБРОС СТЕКОВ ОКТАВИИ: вычищаем историю, чтобы она не перетекала между треками
     if hasattr(sys, "_octavia_undo_stack"):
@@ -313,8 +286,6 @@ def register():
     # 🔥 ИНЪЕКЦИЯ В ЯДРО БЛЕНДЕРА: Вешаем постоянный следильщик за кадрами (СТРОГО ДО ОЦЕНКИ ГРАФА!)
     if octavia_global_frame_handler not in bpy.app.handlers.frame_change_pre:
         bpy.app.handlers.frame_change_pre.append(octavia_global_frame_handler)
-    if octavia_frame_change_post not in bpy.app.handlers.frame_change_post:
-        bpy.app.handlers.frame_change_post.append(octavia_frame_change_post)
 
 
 def unregister():
@@ -343,5 +314,3 @@ def unregister():
     # Чистим за собой при выгрузке аддона
     if octavia_global_frame_handler in bpy.app.handlers.frame_change_pre:
         bpy.app.handlers.frame_change_pre.remove(octavia_global_frame_handler)
-    if octavia_frame_change_post in bpy.app.handlers.frame_change_post:
-        bpy.app.handlers.frame_change_post.remove(octavia_frame_change_post)
