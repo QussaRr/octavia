@@ -20,6 +20,7 @@ SCENE_PROPERTY_NAMES = [
     "octavia_snap",
     "octavia_hovered_ch",
     "octavia_hovered_part",
+    "octavia_hovered_ruler",
     "octavia_active_channel",
     "octavia_auto_scroll_active",
     "octavia_active_macros",
@@ -28,6 +29,8 @@ SCENE_PROPERTY_NAMES = [
     "octavia_loop_end",
     "octavia_loop_active",
     "octavia_authoring_export_dir",
+    "octavia_auto_graph_snapshot",
+    "octavia_auto_buffer_snapshot",
 ]
 
 NODE_PROPERTY_NAMES = [
@@ -83,6 +86,7 @@ def register():
 
     bpy.types.Scene.octavia_hovered_ch = bpy.props.IntProperty(default=0)
     bpy.types.Scene.octavia_hovered_part = bpy.props.StringProperty(default="NONE")
+    bpy.types.Scene.octavia_hovered_ruler = bpy.props.StringProperty(default="NONE")
     bpy.types.Scene.octavia_active_channel = bpy.props.IntProperty(default=1, min=1, max=20)
     bpy.types.Scene.octavia_auto_scroll_active = bpy.props.BoolProperty(
         name="Octavia Auto Scroll Active",
@@ -105,6 +109,14 @@ def register():
         description="Куда копируется Authoring Kit и дублируются слепки графа",
         default="",
         subtype='DIR_PATH',
+    )
+    bpy.types.Scene.octavia_auto_graph_snapshot = bpy.props.BoolProperty(
+        name="Авто-слепок графа",
+        default=True,
+    )
+    bpy.types.Scene.octavia_auto_buffer_snapshot = bpy.props.BoolProperty(
+        name="Авто-слепок буфера",
+        default=True,
     )
 
 
